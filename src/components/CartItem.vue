@@ -1,26 +1,24 @@
 <template>
-    <div >
-        {{itemCart.productLabel}}
-        <a href="#" class="btn btn-primary" @click="removeProduct">X</a>
-    </div>
+  <div>
+    <a href="#" class="btn btn-primary" @click="removeProduct">X</a>
+    {{ itemCart.title }}
+  </div>
 </template>
 
 <script>
 export default {
-    name: 'CartItem',
+  name: "CartItem",
 
-    props:{
-        itemCart: Object
+  props: {
+    itemCart: Object,
+  },
+
+  methods: {
+    removeProduct() {
+      this.$store.commit("removeFromCart", this.itemCart);
     },
-
-    methods: {
-        removeProduct() {
-            this.$emit('toCartList', this.itemCart)
-        },
-    }
-}
+  },
+};
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

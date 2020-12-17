@@ -1,44 +1,51 @@
 <template>
-<div style="margin:0;" class="d-flex flex-column align-items-center justify-content-center" >
-        <h2 >Product List</h2>
-        <ProductDetail />
-</div>
+  <div
+    class="d-flex flex-column align-items-center justify-content-center"
+    style="margin: 0"
+  >
+    <h2>Product List</h2>
+    <ul class="d-flex flex-wrap">
+      <li
+        class="d-flex flex-wrap m-2"
+        v-for="(getProduct, index) of getProducts"
+        :key="index">
+        <ProductDetail
+          v-bind:productItem="getProduct"
+        />
+      </li>
+    </ul>
+
+    <ProductDetail />
+  </div>
 </template>
 
 <script>
-import ProductDetail from '../components/ProductDetail.vue'
+import ProductDetail from "../components/ProductDetail.vue";
 //import CartList from './components/CartList.vue'
-// import { mapGetters, mapActions } from 'vuex';
+import axios from "axios";
 
 export default {
-    components: {
+  components: {
     ProductDetail,
     //CartList
+  },
+
+  name: "ProductList",
+
+  computed: {
+    getProducts() {
+      return this.$store.getters.allProducts;
     },
+  },
 
-    name: 'ProductList',
-    
-    methods:{
-        // ...mapActions (['fetchProducts']),
+  mounted() {
+    axios.get("https://fakestoreapi.com/products")
+    .then(response => {
+      this.$store.commit('setProductsList', response.data)
+      })
+  },
 
-        // created() {
-        //     this.fetchProducts()
-        // },
-
-        // onClick(product){
-        //     console.log(product)
-        //     this.cartProducts.push(product)
-        // },
-
-        // removeFromCart(product){
-        //     const findProduct = this.cartProducts.find(data => data.productLabel === product.productLabel)
-        //     this.cartProducts.splice(this.cartProducts.indexOf(findProduct), 1)
-        //  },
-
-    },
-}
+};
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>
