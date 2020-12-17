@@ -1,21 +1,21 @@
+import Vue from 'vue'
 import Vuex from "vuex";
-import Vue from "vue";
 
 Vue.use(Vuex)
 
 export default {
   state: () => ({
-    myProducts: []
+    products: []
   }),
   mutations: {
-    setProductsList(state, products) {
-      state.myProducts = products;
+    setProductsList(state, product) {
+      state.products = product;
     },
   },
   actions: {},
   getters: {
     allProducts(state) {
-      return state.myProducts;
+      return state.products;
     },
   },
 };

@@ -3,18 +3,18 @@
     <div class="card" style="width: 180px">
       <img
         class="card-img-top img-thumbnail"
-        :src="productItem.image"
+        :src="product.image"
         alt="Card image"
         style="width: 100%"
       />
       <div class="card-body">
-        <h5 class="card-title">{{productItem.title}}</h5>
+        <h5 class="card-title">{{product.title}}</h5>
       </div>
       <ul class="list-group">
         <li class="d-flex flex-wrap justify-content-center">
-          {{ productItem.price }}
+          {{ product.price }}
         </li>
-        <li class="d-flex flex-wrap">{{productItem.category}}</li>
+        <li class="d-flex flex-wrap">{{product.category}}</li>
       </ul>
       <div class="card-body d-flex align-items-center justify-content-center">
         <b-link class="btn btn-primary" @click="addToCart">Add to Cart</b-link>
@@ -28,12 +28,12 @@ export default {
   name: "ProductDetail",
 
   props: {
-    productItem: Object,
+    product: Object,
   },
 
   methods: {
     addToCart() {
-      this.$store.commit("addToCart", this.productItem);
+      this.$store.commit("addToCart", this.product);
     },
   },
 };

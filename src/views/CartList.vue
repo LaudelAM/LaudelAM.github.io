@@ -7,7 +7,7 @@
         v-for="(productToCart, index) in productsToCart"
         :key="index"
       >
-        <CartItem :itemCart="productToCart" v-on:toCartList="onClick" />
+        <CartItem :product="productToCart"/>
       </li>
     </ul>
   </div>
@@ -21,20 +21,9 @@ export default {
     CartItem,
   },
 
-  props: {
-    items: Array,
-  },
-
   computed: {
     productsToCart() {
       return this.$store.getters.productsInCart;
-    },
-  },
-
-  methods: {
-    onClick(product) {
-      //console.log(product)
-      this.$emit("prodToApp", product);
     },
   },
 };

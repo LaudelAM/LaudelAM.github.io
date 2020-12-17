@@ -1,28 +1,28 @@
-import Vuex from "vuex";
 import Vue from "vue";
+import Vuex from "vuex";
 
 Vue.use(Vuex);
 
 export default {
   state: () => ({
-    cartProducts: [],
+    products: [],
   }),
   mutations: {
       addToCart(state, product){
-        state.cartProducts.push(product)
+        state.products.push(product);
       },
 
       removeFromCart(state, product){
-        const findProduct = state.cartProducts.find(
+        const findProduct = state.products.find(
           (data) => data.title === product.title
         );
-        state.cartProducts.splice(state.cartProducts.indexOf(findProduct), 1);
+        state.products.splice(state.products.indexOf(findProduct), 1);
       }
   },
   actions: {},
   getters: {
     productsInCart(state) {
-      return state.cartProducts
+      return state.products;
     },
   },
 };

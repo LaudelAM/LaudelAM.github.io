@@ -1,7 +1,7 @@
 <template>
   <div>
     <a href="#" class="btn btn-primary" @click="removeProduct">X</a>
-    {{ itemCart.title }}
+    {{ product.title }}
   </div>
 </template>
 
@@ -10,12 +10,12 @@ export default {
   name: "CartItem",
 
   props: {
-    itemCart: Object,
+    product: Object,
   },
 
   methods: {
     removeProduct() {
-      this.$store.commit("removeFromCart", this.itemCart);
+      this.$store.commit("removeFromCart", this.product);
     },
   },
 };
