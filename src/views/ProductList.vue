@@ -9,7 +9,7 @@
         v-for="(getProduct, index) of getProducts"
         :key="index">
         <ProductDetail
-          v-bind:product="getProduct"
+          :product="getProduct"
         />
       </li>
     </ul>
