@@ -5,8 +5,7 @@
       <li
         class="list-group-item1"
         v-for="(productToCart, index) in productsToCart"
-        :key="index"
-      >
+        :key="index">
         <CartItem :product="productToCart"/>
       </li>
     </ul>

@@ -20,13 +20,11 @@
 
 <script>
 import ProductDetail from "../components/ProductDetail.vue";
-//import CartList from './components/CartList.vue'
 import axios from "axios";
 
 export default {
   components: {
     ProductDetail,
-    //CartList
   },
 
   name: "ProductList",
