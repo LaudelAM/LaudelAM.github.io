@@ -7,16 +7,16 @@
 </template>
 
 <script>
-import Header from './components/Header'
-import Footer from './components/Footer'
+import Header from "./components/Header";
+import Footer from "./components/Footer";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
     Header,
     Footer,
   },
-}
+};
 </script>
 
 <style>
@@ -38,13 +38,10 @@ header {
   text-align: center;
 }
 
-.row{
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.26);
-    margin: 1rem;
-    border-radius: 5px;
-    padding: 1rem;
-
+.row {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.26);
+  margin: 1rem;
+  border-radius: 5px;
+  padding: 1rem;
 }
-
-
 </style>
