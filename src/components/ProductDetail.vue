@@ -8,16 +8,17 @@
         style="width: 100%"
       />
       <div class="card-body">
-        <h5 class="card-title">{{product.title}}</h5>
+        <h5 class="card-title">{{ product.title }}</h5>
       </div>
       <ul class="list-group">
         <li class="d-flex flex-wrap justify-content-center">
           {{ product.price }}
         </li>
-        <li class="d-flex flex-wrap">{{product.category}}</li>
+        <li class="d-flex flex-wrap justify-content-center">{{ product.category }}</li>
       </ul>
       <div class="card-body d-flex align-items-center justify-content-center">
-        <b-link class="btn btn-primary" @click="addToCart">Add to Cart</b-link>
+        <b-button href="#" variant="outline-primary" @click="addToCart"
+          >Add to Cart</b-button>
       </div>
     </div>
   </div>

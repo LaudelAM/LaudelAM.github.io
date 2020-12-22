@@ -13,8 +13,6 @@
         <ProductDetail v-bind:product="getProduct" />
       </li>
     </ul>
-
-    <ProductDetail />
   </div>
 </template>
 
