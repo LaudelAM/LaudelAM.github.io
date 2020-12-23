@@ -10,7 +10,7 @@ import Contact from "@/views/Contact.vue";
 Vue.use(VueRouter);
 
 export const router = new VueRouter({
-  mode: "history",
+  mode: "hash",
   routes: [
     {
       path: "",
