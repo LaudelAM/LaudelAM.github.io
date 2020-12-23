@@ -2,7 +2,7 @@
   <div>
     <div class="card" style="width: 180px">
       <img
-        class="card-img-top img-thumbnail"
+        class="card-img-top mx-auto d-block"
         :src="product.image"
         alt="Card image"
         style="width: 100%"
@@ -18,7 +18,8 @@
       </ul>
       <div class="card-body d-flex align-items-center justify-content-center">
         <b-button href="#" variant="outline-primary" @click="addToCart"
-          >Add to Cart</b-button>
+          >Add to Cart</b-button
+        >
       </div>
     </div>
   </div>

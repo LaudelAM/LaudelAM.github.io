@@ -1,12 +1,12 @@
 <template>
   <div
-    class="d-flex flex-column align-items-center justify-content-center"
+    class="d-flex flex-column-6 align-items-center justify-content-center"
     style="margin: 0"
   >
     <h2>Product List</h2>
     <ul class="d-flex flex-wrap">
       <li
-        class="d-flex flex-wrap m-2"
+        class="d-flex flex-wrap m-4"
         v-for="(getProduct, index) of getProducts"
         :key="index"
       >
