@@ -1,14 +1,16 @@
 <template>
-  <div class="d-flex flex-column align-items-center justify-content-center">
-    <h2>Cart</h2>
-    <ul class="d-block p-2 text-dark">
+  <div class="row justify-content-center">
+    <ul class="col-9 d-flex flex-wrap justify-content-start">
       <li
-        class="list-group-item1"
+        class="d-flex flex-fill justify-content-center col-sm-6"
         v-for="(productToCart, index) in productsToCart"
-        :key="index">
-        <CartItem :product="productToCart"/>
+        :key="index"
+      >
+        <CartItem :product="productToCart" />
       </li>
     </ul>
+
+    <div class="col-3">I'm on the other side</div>
   </div>
 </template>
 

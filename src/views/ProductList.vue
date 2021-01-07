@@ -1,12 +1,8 @@
 <template>
-  <div
-    class="d-flex flex-column-6 align-items-center justify-content-center"
-    style="margin: 0"
-  >
-    <h2>Product List</h2>
-    <ul class="d-flex flex-wrap">
+  <div class="row align-items-center p-2 justify-content-center">
+    <ul class="d-flex flex-wrap justify-content-center">
       <li
-        class="d-flex flex-wrap m-4"
+        class="d-flex justify-content-center col-sm-3 p-2"
         v-for="(getProduct, index) of getProducts"
         :key="index"
       >

@@ -1,12 +1,13 @@
 <template>
-    <NavigationBar />
+  <NavigationBar />
 </template>
 
 <script>
-import NavigationBar from './NavigationBar'
+import NavigationBar from "./NavigationBar";
+
 export default {
-    components:{
-        NavigationBar
-    }
-}
+  components: {
+    NavigationBar,
+  },
+};
 </script>
