@@ -12,7 +12,8 @@ export default {
           (data) => data.title === product.title
         );
         state.products.splice(state.products.indexOf(findProduct), 1);
-      }
+      },
+
   },
   actions: {},
   getters: {

@@ -1,7 +1,7 @@
 <template>
-  <div class="card mb-3" style="max-width: 300px; border: none">
-    <div class="row" style="border: none">
-      <div class="col-sm d-flex">
+  <div class="card" style="width: 400px; border: none">
+    <div class="row no-gutters">
+      <div class="col-sm-5">
         <img
           class="card-img-thumbnail mx-auto d-block"
           :src="product.image"
@@ -9,18 +9,11 @@
           style="width: 100%"
         />
       </div>
-      <div class="col-sm d-flex">
-        <div class="card-body flex-fill">
-          <p class="card-title">{{ product.title }}</p>
-          <p class="card-text">
-            {{ product.category }}
-          </p>
-          <p class="card-text">
-            <small class="text">R{{ product.price }}</small>
-          </p>
-          <p class="card-text">
-            <a class="btn btn-primary" @click="removeProduct">X</a>
-          </p>
+      <div class="col-sm-7">
+        <div class="card-body">
+          <h5 class="card-title">{{ product.title }}</h5>
+          <p class="card-text">R{{ product.price }}</p>
+          <a class="btn btn-primary" @click="removeProduct">X</a>
         </div>
       </div>
     </div>

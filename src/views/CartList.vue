@@ -1,5 +1,5 @@
 <template>
-  <div class="row justify-content-center">
+  <div class="d-flex p-2 bd-highlight">
     <ul class="col-9 d-flex flex-wrap justify-content-start">
       <li
         class="d-flex flex-fill justify-content-center col-sm-6"
