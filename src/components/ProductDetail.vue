@@ -14,13 +14,8 @@
     <ul class="list-group">
       <li class="d-flex flex-wrap justify-content-center">R{{ product.price }}</li>
       <li class="d-flex flex-wrap justify-content-center">{{ product.category }}</li>
+      <b-badge href="#" variant="dark" @click="addToCart">Add to Cart</b-badge>
     </ul>
-
-    <div class="card-body d-flex align-items-center justify-content-center">
-      <b-button href="#" variant="outline-primary" @click="addToCart"
-        >Add to Cart</b-button
-      >
-    </div>
   </div>
 </template>
 

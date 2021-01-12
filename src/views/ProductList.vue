@@ -1,14 +1,14 @@
 <template>
-  <div class="d-flex p-2 bd-highlight">
-    <ul class="d-flex flex-wrap justify-content-center">
-      <li
-        class="d-flex justify-content-center col-sm-3 p-2"
+  <div class="container" style="border: none">
+    <div class="row">
+      <div
+        class="col-lg-3 col-md-3 col-sm-6 justify-content-center p-2"
         v-for="(getProduct, index) of getProducts"
         :key="index"
       >
         <ProductDetail v-bind:product="getProduct" />
-      </li>
-    </ul>
+      </div>
+    </div>
   </div>
 </template>
 

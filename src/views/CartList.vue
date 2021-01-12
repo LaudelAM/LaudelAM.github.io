@@ -10,7 +10,9 @@
       </li>
     </ul>
 
-    <div class="col-3">I'm on the other side</div>
+    <div class="col-3 justify-content-center">
+      <button type="button" class="btn btn-secondary btn-lg btn-block">Checkout</button>
+    </div>
   </div>
 </template>
 

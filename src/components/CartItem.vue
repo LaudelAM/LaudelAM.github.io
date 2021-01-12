@@ -1,5 +1,5 @@
 <template>
-  <div class="card" style="width: 400px; border: none">
+  <div class="card mb-3" style="width: 400px; border: none">
     <div class="row no-gutters">
       <div class="col-sm-5">
         <img
@@ -13,7 +13,7 @@
         <div class="card-body">
           <h5 class="card-title">{{ product.title }}</h5>
           <p class="card-text">R{{ product.price }}</p>
-          <a class="btn btn-primary" @click="removeProduct">X</a>
+          <b-badge href="#" variant="dark" @click="removeProduct">Remove</b-badge>
         </div>
       </div>
     </div>
