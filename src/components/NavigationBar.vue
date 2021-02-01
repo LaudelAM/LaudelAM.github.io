@@ -80,7 +80,6 @@ export default {
 
     logout() {
       this.$store.commit("logUserOut");
-      this.$store.getters.isLoggedIn;
       this.$router.push("/").catch((err) => err);
     },
   },
