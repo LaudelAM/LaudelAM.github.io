@@ -1,5 +1,5 @@
 <template>
-  <div class="card mb-3" style="width: 400px; border: none">
+  <div class="card mb-3" style="width: 300px; border: none">
     <div class="row no-gutters">
       <div class="col-sm-5">
         <img

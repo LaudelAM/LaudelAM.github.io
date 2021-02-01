@@ -2,6 +2,7 @@ export default {
   state: () => ({
     products: [],
   }),
+
   mutations: {
       addToCart(state, product){
         state.products.push(product);
@@ -14,7 +15,12 @@ export default {
         state.products.splice(state.products.indexOf(findProduct), 1);
       },
 
+      subtotal(state){
+        state.products.reduce((acc, product) => acc + product.price, 0);
+      }
+
   },
+  
   actions: {},
   getters: {
     productsInCart(state) {
