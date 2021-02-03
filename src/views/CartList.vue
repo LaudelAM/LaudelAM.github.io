@@ -2,7 +2,7 @@
   <div class="container" style="border: solid transparent">
     <div class="row">
       <div class="col-9">
-        <div class="row row-cols-2 justify-content-start">
+        <div class="row row-cols-2 justify-content-center">
           <div
             class="col-sm"
             v-for="(productToCart, index) in productsToCart"
@@ -30,7 +30,11 @@
             </li>
           </ul>
         </div>
-        <button type="button" class="btn btn-secondary btn-sm btn-block mt-2">
+        <button
+          type="button"
+          v-on:click="checkoutProduct"
+          class="btn btn-secondary btn-sm btn-block mt-2"
+        >
           Checkout
         </button>
       </div>
@@ -49,6 +53,29 @@ export default {
   computed: {
     productsToCart() {
       return this.$store.getters.productsInCart;
+    },
+
+    userLoggedIn() {
+      return this.$store.getters.isLoggedIn;
+    },
+  },
+
+  methods: {
+    checkoutProduct() {
+      if (this.userLoggedIn != true) {
+        // alert("Please login or signup");
+        this.$swal({
+          icon: "info",
+          title: "Please login or register",
+          showConfirmButton: true,
+        });
+      } else {
+        this.$swal({
+          icon: "info",
+          title: "No data to process",
+          showConfirmButton: true,
+        });
+      }
     },
   },
 };

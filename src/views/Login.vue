@@ -88,7 +88,11 @@ export default {
       let user = this.authenticate(this.input.email, this.input.password);
 
       if (user == null) {
-        alert("Please fill in your credentials");
+        this.$swal({
+          icon: "warning",
+          title: "Please fill in your credentials",
+          showConfirmButton: true,
+        });
       } else {
         this.$store.commit("setUser", user);
         this.$router.replace({ name: "Home" });

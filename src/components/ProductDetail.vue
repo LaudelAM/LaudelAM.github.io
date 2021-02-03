@@ -27,8 +27,11 @@ export default {
     product: Object,
   },
 
+  computed: {},
+
   methods: {
     addToCart() {
+      this.$store.commit("addQuantityProperty", this.product);
       this.$store.commit("addToCart", this.product);
     },
   },

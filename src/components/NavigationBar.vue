@@ -75,7 +75,7 @@ export default {
 
   methods: {
     navigateToCart() {
-      this.$router.push("/cart");
+      this.$router.push("/cart").catch((err) => err);
     },
 
     logout() {

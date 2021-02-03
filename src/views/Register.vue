@@ -95,7 +95,27 @@ export default {
 
   methods: {
     registerUser() {
-      this.$store.commit("setUser", this.user);
+      if (
+        this.user.firstname == "" ||
+        this.user.lastname == "" ||
+        this.user.email == "" ||
+        this.user.password == ""
+      ) {
+        // alert("Please fill in the form");
+        this.$swal({
+          icon: "warning",
+          title: "Please fill in the form",
+          showConfirmButton: true,
+        });
+      } else {
+        // alert("You have been successfully registered");
+        this.$swal({
+          icon: "success",
+          title: "Successfully registered",
+          showConfirmButton: true,
+          footer: "<a href>Click here to login?</a>",
+        });
+      }
     },
   },
 };
