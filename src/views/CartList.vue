@@ -18,15 +18,15 @@
           <ul class="list-group list-group-flush">
             <li class="list-group-item" style="border: none">
               Subtotal
-              <span class="badge badge-light float-right">[0]</span>
+              <span class="badge badge-light float-right">R{{ subtotal }}</span>
             </li>
             <li class="list-group-item" style="border: none">
               VAT
-              <span class="badge badge-light float-right">[0]</span>
+              <span class="badge badge-light float-right">14%</span>
             </li>
             <li class="list-group-item" style="border: none">
               Total
-              <span class="badge badge-light float-right">[0]</span>
+              <span class="badge badge-light float-right">R{{ getTotal }}</span>
             </li>
           </ul>
         </div>
@@ -58,9 +58,22 @@ export default {
     userLoggedIn() {
       return this.$store.getters.isLoggedIn;
     },
+
+    subtotal() {
+      return this.roundToTwo(this.$store.getters.getSubtotal);
+    },
+
+    getTotal() {
+      let total = this.subtotal + (this.subtotal * 14) / 100;
+      return this.roundToTwo(total);
+    },
   },
 
   methods: {
+    roundToTwo(num) {
+      return +(Math.round(num + "e+2") + "e-2");
+    },
+
     checkoutProduct() {
       if (this.userLoggedIn != true) {
         // alert("Please login or signup");

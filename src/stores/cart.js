@@ -3,6 +3,7 @@ import Swal from "sweetalert2";
 export default {
   state: () => ({
     products: [],
+    subtotal: 0,
   }),
 
   mutations: {
@@ -18,6 +19,14 @@ export default {
           showConfirmButton: false,
           timer: 1000,
         });
+      } else {
+        findProduct.quantity += 1;
+        Swal.fire({
+          icon: "success",
+          title: "Product added to your cart",
+          showConfirmButton: false,
+          timer: 500,
+        });
       }
     },
 
@@ -29,12 +38,21 @@ export default {
       const findProduct = state.products.find(
         (data) => data.title === product.title
       );
-      state.products.splice(state.products.indexOf(findProduct), 1);
+
+      if (findProduct && findProduct.quantity > 1) {
+        findProduct.quantity = findProduct.quantity - 1;
+      } else if (findProduct.quantity == 1) {
+        state.products.splice(state.products.indexOf(findProduct), 1);
+      }
     },
 
-    // subtotal(state) {
-    //   state.products.reduce((acc, product) => acc + product.price, 0);
-    // },
+    subtotalCalculation(state) {
+      state.subtotal = state.products.reduce(
+        (accumulator, current) =>
+          accumulator + (current.price * current.quantity),
+        0
+      );
+    },
   },
 
   getters: {
@@ -42,9 +60,8 @@ export default {
       return state.products;
     },
 
-    productQuantity(state, product){
-      return state.products.filter((obj) => obj.id === product.id)
-        .length;
+    getSubtotal(state) {
+      return state.subtotal
     },
   },
 };

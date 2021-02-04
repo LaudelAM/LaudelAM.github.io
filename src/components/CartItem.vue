@@ -14,7 +14,7 @@
           <h5 class="card-title">{{ product.title }}</h5>
           <p class="card-text">R{{ product.price }}</p>
           <b-badge href="#" variant="dark m-3" @click="removeProduct">Remove</b-badge>
-          <b-badge variant="light "> [{{ product.quantity }}]</b-badge>
+          <b-badge variant="light ">Qty [ {{ product.quantity }} ]</b-badge>
         </div>
       </div>
     </div>
@@ -34,6 +34,7 @@ export default {
   methods: {
     removeProduct() {
       this.$store.commit("removeFromCart", this.product);
+      this.$store.commit("subtotalCalculation");
     },
   },
 };
