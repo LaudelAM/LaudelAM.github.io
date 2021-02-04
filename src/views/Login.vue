@@ -100,7 +100,7 @@ export default {
     },
 
     authenticate(email, password) {
-      let user = { firstname: "Laudel", email: email };
+      let user = { firstname: "...Yes, You, Welcome!!! ", email: email };
 
       if (email == "" && password == "") {
         return null;

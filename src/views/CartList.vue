@@ -60,7 +60,7 @@ export default {
     },
 
     subtotal() {
-      return this.roundToTwo(this.$store.getters.getSubtotal);
+      return this.roundToTwo(this.$store.getters.subtotalCalculation);
     },
 
     getTotal() {
@@ -76,7 +76,6 @@ export default {
 
     checkoutProduct() {
       if (this.userLoggedIn != true) {
-        // alert("Please login or signup");
         this.$swal({
           icon: "info",
           title: "Please login or register",

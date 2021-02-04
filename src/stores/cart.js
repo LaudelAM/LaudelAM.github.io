@@ -1,9 +1,6 @@
-import Swal from "sweetalert2";
-
 export default {
   state: () => ({
     products: [],
-    subtotal: 0,
   }),
 
   mutations: {
@@ -12,21 +9,8 @@ export default {
 
       if (!findProduct) {
         state.products.push(product);
-        // alert("Product added to your cart, press [OK] to continue shopping");
-        Swal.fire({
-          icon: "success",
-          title: "Product added to your cart",
-          showConfirmButton: false,
-          timer: 1000,
-        });
       } else {
         findProduct.quantity += 1;
-        Swal.fire({
-          icon: "success",
-          title: "Product added to your cart",
-          showConfirmButton: false,
-          timer: 500,
-        });
       }
     },
 
@@ -45,14 +29,6 @@ export default {
         state.products.splice(state.products.indexOf(findProduct), 1);
       }
     },
-
-    subtotalCalculation(state) {
-      state.subtotal = state.products.reduce(
-        (accumulator, current) =>
-          accumulator + (current.price * current.quantity),
-        0
-      );
-    },
   },
 
   getters: {
@@ -60,8 +36,13 @@ export default {
       return state.products;
     },
 
-    getSubtotal(state) {
-      return state.subtotal
+    subtotalCalculation(state) {
+      let subtotal = state.products.reduce(
+        (accumulator, current) =>
+          accumulator + current.price * current.quantity,
+        0
+      );
+      return subtotal;
     },
   },
 };

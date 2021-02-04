@@ -33,7 +33,12 @@ export default {
     addToCart() {
       this.$store.commit("addQuantityProperty", this.product);
       this.$store.commit("addToCart", this.product);
-      this.$store.commit("subtotalCalculation");
+      this.$swal({
+        icon: "success",
+        title: "Product added to your cart",
+        showConfirmButton: false,
+        timer: 500,
+      });
     },
   },
 };

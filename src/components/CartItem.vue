@@ -1,5 +1,5 @@
 <template>
-  <div class="card mb-2" style="width: 360px; border: none">
+  <div class="card mb-2" style="width: 350px; border: none">
     <div class="row no-gutters">
       <div class="col-sm-4">
         <img
@@ -34,7 +34,6 @@ export default {
   methods: {
     removeProduct() {
       this.$store.commit("removeFromCart", this.product);
-      this.$store.commit("subtotalCalculation");
     },
   },
 };
