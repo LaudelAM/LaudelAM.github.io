@@ -31,7 +31,6 @@ export default {
 
   methods: {
     addToCart() {
-      this.$store.commit("addQuantityProperty", this.product);
       this.$store.commit("addToCart", this.product);
       this.$swal({
         icon: "success",

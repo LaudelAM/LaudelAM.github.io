@@ -6,16 +6,13 @@ export default {
   mutations: {
     addToCart(state, product) {
       let findProduct = state.products.find((data) => data.id === product.id);
+      state.products.product = product.quantity = 1;
 
       if (!findProduct) {
         state.products.push(product);
       } else {
         findProduct.quantity += 1;
       }
-    },
-
-    addQuantityProperty(state, product) {
-      state.products.product = product.quantity = 1;
     },
 
     removeFromCart(state, product) {
