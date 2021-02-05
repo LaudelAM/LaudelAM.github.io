@@ -23,7 +23,7 @@
                 type="text"
                 class="form-control"
                 name="email"
-                v-model="user.email"
+                v-model="input.email"
                 placeholder="Email Address"
               />
             </div>
@@ -36,7 +36,7 @@
                 type="text"
                 class="form-control"
                 name="firstname"
-                v-model="user.firstname"
+                v-model="input.firstname"
                 placeholder="First Name"
               />
             </div>
@@ -48,7 +48,7 @@
                 type="text"
                 class="form-control"
                 name="lastname"
-                v-model="user.lastname"
+                v-model="input.lastname"
                 placeholder="Last Name"
               />
             </div>
@@ -60,7 +60,7 @@
                 type="password"
                 class="form-control"
                 name="password"
-                v-model="user.password"
+                v-model="input.password"
                 placeholder="Password"
               />
             </div>
@@ -73,7 +73,7 @@
                 id="btn-signup"
                 type="button"
                 class="btn btn-success"
-                v-on:click="registerUser"
+                v-on:click="submit"
               >
                 <i class="icon-hand-right"></i> Sign Up
               </button>
@@ -89,32 +89,47 @@
 export default {
   data() {
     return {
-      user: { firstname: "", lastname: "", email: "", password: "" },
+      input: { firstname: "", lastname: "", email: "", password: "" },
     };
   },
 
   methods: {
-    registerUser() {
-      if (
-        this.user.firstname == "" ||
-        this.user.lastname == "" ||
-        this.user.email == "" ||
-        this.user.password == ""
-      ) {
-        // alert("Please fill in the form");
+    submit() {
+      let user = this.registerUser(
+        this.input.firstname,
+        this.input.lastname,
+        this.input.email,
+        this.input.password
+      );
+
+      if (user == null) {
         this.$swal({
           icon: "warning",
-          title: "Please fill in the form",
+          title: "Please fill in the missing detail(s)",
           showConfirmButton: true,
         });
       } else {
-        // alert("You have been successfully registered");
         this.$swal({
           icon: "success",
           title: "Successfully registered",
           showConfirmButton: true,
           footer: "<a href>Click here to login?</a>",
         });
+      }
+    },
+
+    registerUser(firstname, lastname, email, password) {
+      let user = {
+        firstname: firstname,
+        lastname: lastname,
+        email: email,
+        password: password,
+      };
+
+      if (firstname == "" || lastname == "" || email == "" || password == "") {
+        return null;
+      } else {
+        return user;
       }
     },
   },
