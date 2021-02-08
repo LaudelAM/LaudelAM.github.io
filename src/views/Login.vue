@@ -102,21 +102,35 @@ export default {
       });
 
       if (user == null) {
-        Toast.fire({
-          icon: "warning",
-          title: "Please fill in your credentials",
+        this.$swal({
+          icon: "error",
+          title: "Oops...",
         });
       } else {
         Toast.fire({
           icon: "success",
           title: "Signed in successfully",
+          showConfirmButton: false,
         });
+
         this.$store.commit("setUser", user);
         this.$router.replace({ name: "Home" });
       }
     },
 
     authenticate(email, password) {
+      const Toast = Swal.mixin({
+        toast: true,
+        position: "center",
+        showConfirmButton: false,
+        timer: 3500,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.addEventListener("mouseenter", Swal.stopTimer);
+          toast.addEventListener("mouseleave", Swal.resumeTimer);
+        },
+      });
+
       if (email == "" && password == "") {
         return null;
       } else {
@@ -128,10 +142,9 @@ export default {
             // ...
           })
           .catch((error) => {
-            this.$swal({
-              icon: "warning",
+            Toast.fire({
+              icon: "error",
               title: error.message,
-              showConfirmButton: true,
             });
             // ..
           });
