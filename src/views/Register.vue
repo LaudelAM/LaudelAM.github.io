@@ -86,6 +86,9 @@
 </template>
 
 <script>
+import firebase from "firebase/app";
+import "firebase/auth";
+import Swal from "sweetalert2";
 export default {
   data() {
     return {
@@ -101,19 +104,27 @@ export default {
         this.input.email,
         this.input.password
       );
+      const Toast = Swal.mixin({
+        toast: true,
+        position: "center",
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.addEventListener("mouseenter", Swal.stopTimer);
+          toast.addEventListener("mouseleave", Swal.resumeTimer);
+        },
+      });
 
       if (user == null) {
-        this.$swal({
+        Toast.fire({
           icon: "warning",
           title: "Please fill in the missing detail(s)",
-          showConfirmButton: true,
         });
       } else {
-        this.$swal({
+        Toast.fire({
           icon: "success",
           title: "Successfully registered",
-          showConfirmButton: true,
-          footer: "<a href>Click here to login?</a>",
         });
       }
     },
@@ -129,6 +140,26 @@ export default {
       if (firstname == "" || lastname == "" || email == "" || password == "") {
         return null;
       } else {
+        firebase
+          .auth()
+          .createUserWithEmailAndPassword(email, password)
+          .then((res) => {
+            res.user.updateProfile({
+              displayName: user.firstname + " " + user.lastname,
+            });
+            // ...
+          })
+          .then(() => {
+            this.$router.push("/login");
+          })
+          .catch((error) => {
+            this.$swal({
+              icon: "warning",
+              title: error.message,
+              showConfirmButton: true,
+            });
+            // ..
+          });
         return user;
       }
     },

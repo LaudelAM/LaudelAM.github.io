@@ -75,6 +75,9 @@
 </template>
 
 <script>
+import Swal from "sweetalert2";
+import firebase from "firebase/app";
+import "firebase/auth";
 export default {
   data() {
     return {
@@ -86,25 +89,65 @@ export default {
   methods: {
     submit() {
       let user = this.authenticate(this.input.email, this.input.password);
+      const Toast = Swal.mixin({
+        toast: true,
+        position: "center",
+        showConfirmButton: false,
+        timer: 2000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.addEventListener("mouseenter", Swal.stopTimer);
+          toast.addEventListener("mouseleave", Swal.resumeTimer);
+        },
+      });
 
       if (user == null) {
-        this.$swal({
+        Toast.fire({
           icon: "warning",
           title: "Please fill in your credentials",
-          showConfirmButton: true,
         });
       } else {
+        Toast.fire({
+          icon: "success",
+          title: "Signed in successfully",
+        });
         this.$store.commit("setUser", user);
         this.$router.replace({ name: "Home" });
       }
     },
 
     authenticate(email, password) {
-      let user = { firstname: "...Yes, You, Welcome!!! ", email: email };
-
       if (email == "" && password == "") {
         return null;
       } else {
+        firebase
+          .auth()
+          .signInWithEmailAndPassword(email, password)
+          .then(() => {
+            // Signed in
+            // ...
+          })
+          .catch((error) => {
+            this.$swal({
+              icon: "warning",
+              title: error.message,
+              showConfirmButton: true,
+            });
+            // ..
+          });
+
+        let user = firebase.auth().currentUser;
+
+        if (user) {
+          // User is signed in.
+          user = {
+            name: user.displayName,
+            email: user.email,
+            emailVerified: user.emailVerified,
+            uid: user.uid,
+          };
+        }
+        // console.log(user);
         return user;
       }
     },

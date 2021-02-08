@@ -62,6 +62,9 @@
 </template>
 
 <script>
+import firebase from "firebase/app";
+import "firebase/auth";
+import Swal from "sweetalert2";
 export default {
   computed: {
     getUser() {
@@ -79,6 +82,37 @@ export default {
     },
 
     logout() {
+      const Toast = Swal.mixin({
+        toast: true,
+        position: "center",
+        showConfirmButton: false,
+        timer: 1500,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.addEventListener("mouseenter", Swal.stopTimer);
+          toast.addEventListener("mouseleave", Swal.resumeTimer);
+        },
+      });
+
+      firebase
+        .auth()
+        .signOut()
+        .then(() => {
+          // Sign-out successful.
+          Toast.fire({
+            icon: "success",
+            title: "Logged out",
+          });
+        })
+        .catch((error) => {
+          // An error happened.
+          this.$swal({
+            icon: "warning",
+            title: error.message,
+            showConfirmButton: true,
+          });
+        });
+
       this.$store.commit("logUserOut");
       this.$router.push("/").catch((err) => err);
     },
