@@ -4,10 +4,18 @@ import products from "./products";
 import cart from "./cart";
 import authentication from "./authentication";
 import createPersistedState from "vuex-persistedstate";
+import {vuexfireMutations} from "vuexfire";
+import {firestorePlugin} from "vuefire";
 
+Vue.use(firestorePlugin);
 Vue.use(Vuex);
 
 export const store = new Vuex.Store({
+  mutations: {
+    // other mutations
+    ...vuexfireMutations,
+  },
+
   modules: {
     products,
     cart,

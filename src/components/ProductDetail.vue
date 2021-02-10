@@ -17,6 +17,8 @@
       <b-badge href="#" variant="dark" @click="addToCart">Add to Cart</b-badge>
     </ul>
   </div>
+
+  <!--  -->
 </template>
 
 <script>
@@ -26,8 +28,6 @@ export default {
   props: {
     product: Object,
   },
-
-  computed: {},
 
   methods: {
     addToCart() {

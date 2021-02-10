@@ -1,13 +1,15 @@
 export default {
   state: () => ({
-    products: []
+    products: [],
   }),
   mutations: {
     setProductsList(state, product) {
       state.products = product;
     },
   },
-  actions: {},
+
+  actions: {  },
+
   getters: {
     allProducts(state) {
       return state.products;
