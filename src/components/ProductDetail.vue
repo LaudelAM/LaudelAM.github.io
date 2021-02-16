@@ -13,7 +13,9 @@
 
     <ul class="list-group">
       <li class="d-flex flex-wrap justify-content-center">R{{ product.price }}</li>
-      <li class="d-flex flex-wrap justify-content-center">{{ product.category }}</li>
+      <li class="d-flex flex-wrap justify-content-center">
+        {{ product.category }}
+      </li>
       <b-badge href="#" variant="dark" @click="addToCart">Add to Cart</b-badge>
     </ul>
   </div>
@@ -22,6 +24,8 @@
 </template>
 
 <script>
+import { db } from "../database";
+
 export default {
   name: "ProductDetail",
 
@@ -32,6 +36,7 @@ export default {
   methods: {
     addToCart() {
       this.$store.commit("addToCart", this.product);
+      this.addToCartDb(this.product);
       this.$swal({
         icon: "success",
         title: "Product added to your cart",
@@ -39,6 +44,25 @@ export default {
         timer: 500,
       });
     },
+
+    // addToCartDb(product) {
+    //   // Add a new document in collection "cart"
+    //   let cartProduct = db.collection("cart").doc(product.id);
+
+    //   cartProduct
+    //     .set()
+    //     .then((doc) => {
+    //       if (!doc.exists) {
+    //         let data = doc.data();
+
+    //         return data;
+    //       }
+    //     })
+    //     .catch((error) => {
+    //       console.log("Error getting user:", error);
+    //     });
+
+    // },
   },
 };
 </script>

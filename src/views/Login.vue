@@ -49,15 +49,6 @@
               />
             </div>
 
-            <!-- <div class="input-group">
-              <div class="checkbox">
-                <label>
-                  <input id="login-remember" type="checkbox" name="remember" value="1" />
-                  Remember me
-                </label>
-              </div>
-            </div> -->
-
             <div style="margin-top: 10px" class="form-group">
               <!-- Button -->
 
@@ -78,6 +69,19 @@
 import Swal from "sweetalert2";
 import firebase from "firebase/app";
 import "firebase/auth";
+// import { db } from "../database";
+
+const Toast = Swal.mixin({
+  toast: true,
+  position: "center",
+  showConfirmButton: false,
+  timer: 2000,
+  timerProgressBar: true,
+  didOpen: (toast) => {
+    toast.addEventListener("mouseenter", Swal.stopTimer);
+    toast.addEventListener("mouseleave", Swal.resumeTimer);
+  },
+});
 export default {
   data() {
     return {
@@ -88,81 +92,64 @@ export default {
 
   methods: {
     submit() {
-      let user = this.authenticate(this.input.email, this.input.password);
-      const Toast = Swal.mixin({
-        toast: true,
-        position: "center",
-        showConfirmButton: false,
-        timer: 2000,
-        timerProgressBar: true,
-        didOpen: (toast) => {
-          toast.addEventListener("mouseenter", Swal.stopTimer);
-          toast.addEventListener("mouseleave", Swal.resumeTimer);
-        },
-      });
-
-      if (user == null) {
-        this.$swal({
-          icon: "error",
-          title: "Oops...",
-        });
-      } else {
+      let user = null;
+      if (
+        this.input.email == "" ||
+        this.input.password == "" ||
+        /[^A-Za-z0-9]+/g.test(this.input.password) ||
+        this.input.password.length < 6
+      ) {
         Toast.fire({
-          icon: "success",
-          title: "Signed in successfully",
+          icon: "error",
+          title: "Oops... Check you credentials!!",
           showConfirmButton: false,
         });
+      } else {
+        user = this.authenticate(this.input.email, this.input.password);
 
-        this.$store.commit("setUser", user);
-        this.$router.replace({ name: "Home" });
+        if (user) {
+          console.log(user);
+          this.$store.commit("setUser", user);
+
+          Toast.fire({
+            icon: "success",
+            title: "Signed in successfully",
+            showConfirmButton: false,
+          });
+
+          this.$router.replace({ name: "Home" });
+        }
       }
     },
 
     authenticate(email, password) {
-      const Toast = Swal.mixin({
-        toast: true,
-        position: "center",
-        showConfirmButton: false,
-        timer: 3500,
-        timerProgressBar: true,
-        didOpen: (toast) => {
-          toast.addEventListener("mouseenter", Swal.stopTimer);
-          toast.addEventListener("mouseleave", Swal.resumeTimer);
-        },
-      });
-
-      if (email == "" && password == "") {
-        return null;
-      } else {
-        firebase
-          .auth()
-          .signInWithEmailAndPassword(email, password)
-          .then(() => {
-            // Signed in
-            // ...
-          })
-          .catch((error) => {
-            Toast.fire({
-              icon: "error",
-              title: error.message,
-            });
-            // ..
+      firebase
+        .auth()
+        .signInWithEmailAndPassword(email, password)
+        .then(() => {
+          // Signed in
+        })
+        .catch((error) => {
+          Toast.fire({
+            icon: "error",
+            title: error.message,
           });
+          // ..
+        });
 
-        let user = firebase.auth().currentUser;
+      let user = firebase.auth().currentUser;
 
-        if (user) {
-          // User is signed in.
-          user = {
-            name: user.displayName,
-            email: user.email,
-            emailVerified: user.emailVerified,
-            uid: user.uid,
-          };
-        }
-        // console.log(user);
-        return user;
+      if (user) {
+        // User is signed in.
+        user = {
+          name: user.displayName,
+          email: user.email,
+          emailVerified: user.emailVerified,
+          uid: user.uid,
+        };
       }
+
+      return user;
     },
   },
 };

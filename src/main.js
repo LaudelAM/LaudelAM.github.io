@@ -7,6 +7,7 @@ import {router} from "./router";
 import {store} from "./stores";
 import {db} from "./database";
 import "firebase/auth";
+import Vuelidate from "vuelidate";
 
 // Import the styles directly. (Or you could add them via script tags.)
 import 'bootstrap/dist/css/bootstrap.css';
@@ -16,6 +17,7 @@ import {BootstrapVueIcons} from "bootstrap-vue";
 Vue.use(BootstrapVue);
 Vue.use(BootstrapVueIcons);
 Vue.use(VueSweetalert2);
+Vue.use(Vuelidate);
 
 Vue.config.productionTip = false
 

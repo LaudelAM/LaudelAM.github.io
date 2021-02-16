@@ -25,6 +25,8 @@
                 name="email"
                 v-model="input.email"
                 placeholder="Email Address"
+                pattern="^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$"
+                required
               />
             </div>
           </div>
@@ -38,6 +40,8 @@
                 name="firstname"
                 v-model="input.firstname"
                 placeholder="First Name"
+                pattern="[^\d]+"
+                required
               />
             </div>
           </div>
@@ -50,6 +54,8 @@
                 name="lastname"
                 v-model="input.lastname"
                 placeholder="Last Name"
+                pattern="[^\d]+"
+                required
               />
             </div>
           </div>
@@ -62,6 +68,8 @@
                 name="password"
                 v-model="input.password"
                 placeholder="Password"
+                pattern="[\dA-Za-z]{6,}"
+                required
               />
             </div>
           </div>
@@ -89,6 +97,20 @@
 import firebase from "firebase/app";
 import "firebase/auth";
 import Swal from "sweetalert2";
+import { db } from "../database";
+
+const Toast = Swal.mixin({
+  toast: true,
+  position: "center",
+  showConfirmButton: false,
+  timer: 3000,
+  timerProgressBar: true,
+  didOpen: (toast) => {
+    toast.addEventListener("mouseenter", Swal.stopTimer);
+    toast.addEventListener("mouseleave", Swal.resumeTimer);
+  },
+});
+
 export default {
   data() {
     return {
@@ -98,70 +120,95 @@ export default {
 
   methods: {
     submit() {
-      let user = this.registerUser(
-        this.input.firstname,
-        this.input.lastname,
-        this.input.email,
-        this.input.password
-      );
-      const Toast = Swal.mixin({
-        toast: true,
-        position: "center",
-        showConfirmButton: false,
-        timer: 3000,
-        timerProgressBar: true,
-        didOpen: (toast) => {
-          toast.addEventListener("mouseenter", Swal.stopTimer);
-          toast.addEventListener("mouseleave", Swal.resumeTimer);
-        },
-      });
-
-      if (user == null) {
+      // let user = null;
+      if (
+        this.input.firstname == "" ||
+        /[0-9]+/g.test(this.input.firstname) ||
+        this.input.lastname == "" ||
+        /[0-9]+/g.test(this.input.lastname) ||
+        this.input.email == "" ||
+        this.input.password == "" ||
+        /[^A-Za-z0-9]+/g.test(this.input.password) ||
+        this.input.password.length < 6
+      ) {
         Toast.fire({
           icon: "warning",
-          title: "Please fill in the missing detail(s)",
+          title: "Please fill in the missing detail(s) or check for the red signals",
         });
       } else {
-        Toast.fire({
-          icon: "success",
-          title: "Successfully registered",
-        });
+        let user = this.registerUser(
+          this.input.firstname,
+          this.input.lastname,
+          this.input.email,
+          this.input.password
+        );
+        if (user) {
+          console.log(user);
+          Toast.fire({
+            icon: "success",
+            title: "Welcome" + " " + user.firstname + " " + user.lastname,
+          });
+
+          this.$router.push("/login");
+        } else {
+          Toast.fire({
+            icon: "warning",
+            title: "Registration unsuccessful",
+          });
+        }
       }
     },
 
     registerUser(firstname, lastname, email, password) {
-      let user = {
-        firstname: firstname,
-        lastname: lastname,
-        email: email,
-        password: password,
-      };
-
-      if (firstname == "" || lastname == "" || email == "" || password == "") {
-        return null;
-      } else {
-        firebase
-          .auth()
-          .createUserWithEmailAndPassword(email, password)
-          .then((res) => {
-            res.user.updateProfile({
-              displayName: user.firstname + " " + user.lastname,
-            });
-            // ...
-          })
-          .then(() => {
-            this.$router.push("/login");
-          })
-          .catch((error) => {
-            this.$swal({
-              icon: "warning",
-              title: error.message,
-              showConfirmButton: true,
-            });
-            // ..
+      firebase
+        .auth()
+        .createUserWithEmailAndPassword(email, password)
+        .then((res) => {
+          res.user.updateProfile({
+            displayName: firstname + " " + lastname,
           });
-        return user;
+
+          db.collection("users")
+            .doc(email)
+            .set({
+              firstname: firstname,
+              lastname: lastname,
+              email: email,
+              password: password,
+            })
+            .then(() => {
+              console.log("User successfully saved!");
+            })
+            .catch((error) => {
+              console.error("Error saving user: ", error);
+            });
+        });
+
+      let userProfile = db.collection("users").doc(email);
+
+      userProfile
+        .get()
+        .then((doc) => {
+          if (doc.exists) {
+            let user = doc.data();
+            return user;
+          }
+        })
+        .catch((error) => {
+          console.log("Error getting user:", error);
+        });
+
+      if (userProfile) {
+        userProfile = {
+          firstname: firstname,
+          lastname: lastname,
+          email: email,
+          password: password,
+        };
       }
+
+      // console.log(userProfile);
+      return userProfile;
     },
   },
 };

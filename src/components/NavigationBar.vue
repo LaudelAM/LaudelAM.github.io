@@ -42,9 +42,16 @@
         </b-navbar-nav>
         <!--  -->
         <b-navbar-nav v-else class="ml-auto">
-          <b-nav-item>
-            <a class="nav-link text-light" @click="logout" href="#">Logout</a>
-          </b-nav-item>
+          <b-nav-item-dropdown right>
+            <!-- Using 'button-content' slot -->
+            <template class="text-light" #button-content>
+              <em>{{ getUser.name }}</em>
+            </template>
+            <b-dropdown-item>
+              <router-link class="text-dark" to="/userProfile">Profile</router-link>
+            </b-dropdown-item>
+            <b-dropdown-item @click="logout" href="#">Logout</b-dropdown-item>
+          </b-nav-item-dropdown>
 
           <b-button
             size="sm"
@@ -65,6 +72,19 @@
 import firebase from "firebase/app";
 import "firebase/auth";
 import Swal from "sweetalert2";
+
+const Toast = Swal.mixin({
+  toast: true,
+  position: "center",
+  showConfirmButton: false,
+  timer: 1500,
+  timerProgressBar: true,
+  didOpen: (toast) => {
+    toast.addEventListener("mouseenter", Swal.stopTimer);
+    toast.addEventListener("mouseleave", Swal.resumeTimer);
+  },
+});
+
 export default {
   computed: {
     getUser() {
@@ -82,17 +102,7 @@ export default {
     },
 
     logout() {
-      const Toast = Swal.mixin({
-        toast: true,
-        position: "center",
-        showConfirmButton: false,
-        timer: 1500,
-        timerProgressBar: true,
-        didOpen: (toast) => {
-          toast.addEventListener("mouseenter", Swal.stopTimer);
-          toast.addEventListener("mouseleave", Swal.resumeTimer);
-        },
-      });
+      this.$store.commit("logUserOut");
 
       firebase
         .auth()
@@ -113,7 +123,6 @@ export default {
           });
         });
 
-      this.$store.commit("logUserOut");
       this.$router.push("/").catch((err) => err);
     },
   },
