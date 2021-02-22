@@ -5,10 +5,10 @@
         <div class="row row-cols-2 justify-content-center">
           <div
             class="col-sm"
-            v-for="(productToCart, index) in productsToCart"
+            v-for="(productInCartDb, index) in productsInCartDb"
             :key="index"
           >
-            <CartItem :product="productToCart" />
+            <CartItem :product="productInCartDb" />
           </div>
         </div>
       </div>
@@ -45,6 +45,9 @@
 <script>
 import CartItem from "../components/CartItem.vue";
 import Swal from "sweetalert2";
+import { db } from "../database";
+
+const query = db.collection("cart");
 
 const Toast = Swal.mixin({
   toast: true,
@@ -60,6 +63,12 @@ const Toast = Swal.mixin({
 export default {
   components: {
     CartItem,
+  },
+
+  data() {
+    return {
+      products: [],
+    };
   },
 
   computed: {
@@ -78,6 +87,10 @@ export default {
     getTotal() {
       let total = this.subtotal + (this.subtotal * 14) / 100;
       return this.roundToTwo(total);
+    },
+
+    productsInCartDb() {
+      return this.products;
     },
   },
 
@@ -101,6 +114,25 @@ export default {
         });
       }
     },
+
+    async fetchProducts() {
+      try {
+        const { docs } = await query.get();
+
+        this.products = docs.map((doc) => {
+          const { id } = doc;
+          const data = doc.data();
+          return { id, ...data };
+        });
+        // console.log("Loaded products", this.products);
+      } catch (error) {
+        throw new Error("Something gone wrong!");
+      }
+    },
+  },
+
+  mounted() {
+    this.fetchProducts();
   },
 };
 </script>

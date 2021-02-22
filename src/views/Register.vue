@@ -119,7 +119,7 @@ export default {
   },
 
   methods: {
-    submit() {
+    async submit() {
       // let user = null;
       if (
         this.input.firstname == "" ||
@@ -136,79 +136,73 @@ export default {
           title: "Please fill in the missing detail(s) or check for the red signals",
         });
       } else {
-        let user = this.registerUser(
+        let user = await this.registerUser(
           this.input.firstname,
           this.input.lastname,
           this.input.email,
           this.input.password
         );
-        if (user) {
+        if (!user) {
+          Toast.fire({
+            icon: "warning",
+            title:
+              "Registration unsuccessful. <br> This email adrress is used by another account ",
+          });
+        } else {
           console.log(user);
           Toast.fire({
             icon: "success",
             title: "Welcome" + " " + user.firstname + " " + user.lastname,
           });
-
+          //
           this.$router.push("/login");
-        } else {
-          Toast.fire({
-            icon: "warning",
-            title: "Registration unsuccessful",
-          });
         }
       }
     },
 
-    registerUser(firstname, lastname, email, password) {
-      firebase
-        .auth()
-        .createUserWithEmailAndPassword(email, password)
-        .then((res) => {
-          res.user.updateProfile({
-            displayName: firstname + " " + lastname,
-          });
+    async registerUser(firstname, lastname, email, password) {
+      //Check for existing user and return null if found user
+      console.log("start checking");
+      let user = db.collection("users").doc(email);
+      let doc = await user.get();
+      let result = doc.data();
 
-          db.collection("users")
-            .doc(email)
-            .set({
-              firstname: firstname,
-              lastname: lastname,
-              email: email,
-              password: password,
-            })
-            .then(() => {
-              console.log("User successfully saved!");
-            })
-            .catch((error) => {
-              console.error("Error saving user: ", error);
-            });
-        });
+      console.log("end checking, existant user", result);
 
-      let userProfile = db.collection("users").doc(email);
-
-      userProfile
-        .get()
-        .then((doc) => {
-          if (doc.exists) {
-            let user = doc.data();
-            return user;
-          }
-        })
-        .catch((error) => {
-          console.log("Error getting user:", error);
-        });
-
-      if (userProfile) {
-        userProfile = {
-          firstname: firstname,
-          lastname: lastname,
-          email: email,
-          password: password,
-        };
+      if (result) {
+        return null;
       }
 
-      // console.log(userProfile);
-      return userProfile;
+      // Save credentials to firebase
+      console.log("Start saving credentials");
+      let response = await firebase
+        .auth()
+        .createUserWithEmailAndPassword(email, password);
+      response.user.updateProfile({ displayName: firstname + " " + lastname });
+      console.log("End saving credentials");
+
+      //Saving to firestore database
+      console.log("Start Create profile to DB");
+      let userRef = await db.collection("users").doc(email);
+      doc = await userRef.set({
+        firstname: firstname,
+        lastname: lastname,
+        email: email,
+      });
+      console.log("End Create profile to DB");
+
+      //Fetching User profile
+      console.log("Start Fetch profile from DB");
+      let userProfile = db.collection("users").doc(email);
+      doc = await userProfile.get();
+
+      if (doc.exists) {
+        let result = doc.data();
+        console.log("Fetched profile ->", result);
+
+        console.log("End Fetch profile from DB");
+        return result;
+      }
     },
   },
 };

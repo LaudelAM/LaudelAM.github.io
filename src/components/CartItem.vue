@@ -22,6 +22,8 @@
 </template>
 
 <script>
+import { db } from "../database";
+
 export default {
   name: "CartItem",
 
@@ -33,7 +35,21 @@ export default {
 
   methods: {
     removeProduct() {
-      this.$store.commit("removeFromCart", this.product);
+      // this.$store.commit("removeFromCart", this.product);
+
+      this.deleteProduct(this.product);
+    },
+
+    deleteProduct(product) {
+      db.collection("cart")
+        .doc(product.id)
+        .delete()
+        .then(() => {
+          console.log("Document successfully deleted!");
+        })
+        .catch((error) => {
+          console.error("Error removing document: ", error);
+        });
     },
   },
 };

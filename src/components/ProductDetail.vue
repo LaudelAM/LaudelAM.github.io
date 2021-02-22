@@ -35,7 +35,7 @@ export default {
 
   methods: {
     addToCart() {
-      this.$store.commit("addToCart", this.product);
+      // this.$store.commit("addToCart", this.product);
       this.addToCartDb(this.product);
       this.$swal({
         icon: "success",
@@ -45,24 +45,45 @@ export default {
       });
     },
 
-    // addToCartDb(product) {
-    //   // Add a new document in collection "cart"
-    //   let cartProduct = db.collection("cart").doc(product.id);
+    addToCartDb(product) {
+      // Get product in collection "products"
+      let docRef = db.collection("products").doc(product.id);
 
-    //   cartProduct
-    //     .set()
-    //     .then((doc) => {
-    //       if (!doc.exists) {
-    //         let data = doc.data();
+      docRef
+        .get()
+        .then((doc) => {
+          if (doc.exists) {
+            let product = doc.data();
+            console.log("Document data:", product);
 
-    //         return data;
-    //       }
-    //     })
-    //     .catch((error) => {
-    //       console.log("Error getting user:", error);
-    //     });
+            // Add a new document in collection "cart"
+            db.collection("cart")
+              .doc(product.id)
+              .set({
+                image: product.image,
+                title: product.title,
+                category: product.category,
+                price: product.price,
+                quantity: (product.quantity = 1),
+              })
+              .then(() => {
+                console.log("Document successfully written!");
+              })
+              .catch((error) => {
+                console.error("Error writing document: ", error);
+              });
+            return product;
+          } else {
+            // doc.data() will be undefined in this case
+            console.log("No such document!");
+          }
+        })
+        .catch((error) => {
+          console.log("Error getting document:", error);
+        });
 
-    // },
+      // return docRef;
+    },
   },
 };
 </script>
