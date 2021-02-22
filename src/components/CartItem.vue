@@ -36,7 +36,6 @@ export default {
   methods: {
     removeProduct() {
       // this.$store.commit("removeFromCart", this.product);
-
       this.deleteProduct(this.product);
     },
 

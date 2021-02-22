@@ -91,7 +91,7 @@ export default {
   },
 
   methods: {
-    submit() {
+    async submit() {
       let user = null;
       if (
         this.input.email == "" ||
@@ -105,7 +105,7 @@ export default {
           showConfirmButton: false,
         });
       } else {
-        user = this.authenticate(this.input.email, this.input.password);
+        user = await this.authenticate(this.input.email, this.input.password);
 
         if (user) {
           console.log(user);
@@ -118,26 +118,18 @@ export default {
           });
 
           this.$router.replace({ name: "Home" });
+        } else {
+          Toast.fire({
+            icon: "error",
+            title: "There is no such user <br> Please register if new user. :)",
+          });
         }
       }
     },
 
-    authenticate(email, password) {
-      firebase
-        .auth()
-        .signInWithEmailAndPassword(email, password)
-        .then(() => {
-          // Signed in
-        })
-        .catch((error) => {
-          Toast.fire({
-            icon: "error",
-            title: error.message,
-          });
-          // ..
-        });
-
-      let user = firebase.auth().currentUser;
+    async authenticate(email, password) {
+      let response = await firebase.auth().signInWithEmailAndPassword(email, password);
+      let user = response.user;
 
       if (user) {
         // User is signed in.

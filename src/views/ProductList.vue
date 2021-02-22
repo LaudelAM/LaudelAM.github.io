@@ -1,8 +1,8 @@
 <template>
   <div class="container">
-    <div class="row row-cols-4 justify-content-center">
+    <div class="row justify-content-center">
       <div
-        class="col justify-content-center p-2"
+        class="col-3 col-md-3 col-sm-6 col-xs p-2"
         v-for="(productInDb, index) of productsInDb"
         :key="index"
       >

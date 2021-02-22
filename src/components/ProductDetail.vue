@@ -81,8 +81,6 @@ export default {
         .catch((error) => {
           console.log("Error getting document:", error);
         });
-
-      // return docRef;
     },
   },
 };
