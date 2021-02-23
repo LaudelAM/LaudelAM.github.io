@@ -36,7 +36,7 @@
             <div class="col-md-9">
               <input
                 type="text"
-                class="form-control"
+                class="form-control text-capitalize"
                 name="firstname"
                 v-model="input.firstname"
                 placeholder="First Name"
@@ -50,7 +50,7 @@
             <div class="col-md-9">
               <input
                 type="text"
-                class="form-control"
+                class="form-control text-capitalize"
                 name="lastname"
                 v-model="input.lastname"
                 placeholder="Last Name"

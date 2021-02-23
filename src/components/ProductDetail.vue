@@ -1,7 +1,7 @@
 <template>
   <div class="card d-flex" style="width: 200px">
     <img
-      class="card-img-top mx-auto d-block"
+      class="img-fluid card-img-top rounded mx-auto d-block"
       :src="product.image"
       alt="Card image"
       style="width: 100%"
