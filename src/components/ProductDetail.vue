@@ -1,30 +1,45 @@
 <template>
-  <div class="card d-flex" style="width: 200px">
-    <img
-      class="img-fluid card-img-top rounded mx-auto d-block"
-      :src="product.image"
-      alt="Card image"
-      style="width: 100%"
-    />
-
+  <!--  -->
+  <div class="card h-100">
+    <img :src="product.image" class="card-img-thumbnail img-responsive" alt="..." />
     <div class="card-body">
       <h5 class="card-title">{{ product.title }}</h5>
     </div>
-
-    <ul class="list-group">
-      <li class="d-flex flex-wrap justify-content-center">R{{ product.price }}</li>
-      <li class="d-flex flex-wrap justify-content-center">
-        {{ product.category }}
-      </li>
-      <b-badge href="#" variant="dark" @click="addToCart">Add to Cart</b-badge>
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item text-center">R{{ product.price }}</li>
+      <li class="list-group-item text-center">{{ product.category }}</li>
     </ul>
+    <div class="card-body">
+      <!-- <a href="#" class="card-link">Card link</a> -->
+      <b-button size="sm" @click="addToCart" variant="light" class="my-2 my-md-0">
+        <b-icon icon="cart-plus-fill" aria-label="Help" style="border: none"
+          >Add to cart</b-icon
+        >
+      </b-button>
+      <!-- <a href="#" class="card-link">Another link</a> -->
+      <!-- <b-button size="sm" variant="light" class="my-2 my-md-0" style="float: left">
+        <b-icon icon="suit-heart" aria-label="Help">Like</b-icon>
+      </b-button> -->
+    </div>
   </div>
-
-  <!--  -->
 </template>
 
 <script>
 import { db } from "../database";
+import firebase from "firebase/app";
+import Swal from "sweetalert2";
+
+const Toast = Swal.mixin({
+  toast: true,
+  position: "center",
+  showConfirmButton: false,
+  timer: 700,
+  timerProgressBar: true,
+  didOpen: (toast) => {
+    toast.addEventListener("mouseenter", Swal.stopTimer);
+    toast.addEventListener("mouseleave", Swal.resumeTimer);
+  },
+});
 
 export default {
   name: "ProductDetail",
@@ -37,50 +52,45 @@ export default {
     addToCart() {
       // this.$store.commit("addToCart", this.product);
       this.addToCartDb(this.product);
-      this.$swal({
+      Toast.fire({
         icon: "success",
-        title: "Product added to your cart",
-        showConfirmButton: false,
-        timer: 500,
+        title: "Product added to cart",
       });
     },
 
-    addToCartDb(product) {
-      // Get product in collection "products"
-      let docRef = db.collection("products").doc(product.id);
+    async addToCartDb(product) {
+      console.log("start checking");
+      let cartProductRef = db.collection("cart").doc(product.id);
+      let doc = await cartProductRef.get();
+      let productInCart = doc.data();
 
-      docRef
-        .get()
-        .then((doc) => {
-          if (doc.exists) {
-            let product = doc.data();
-            console.log("Document data:", product);
+      console.log("end checking, existant product", productInCart);
 
-            // Add a new document in collection "cart"
-            db.collection("cart")
-              .doc(product.id)
-              .set({
-                image: product.image,
-                title: product.title,
-                category: product.category,
-                price: product.price,
-                quantity: (product.quantity = 1),
-              })
-              .then(() => {
-                console.log("Document successfully written!");
-              })
-              .catch((error) => {
-                console.error("Error writing document: ", error);
-              });
-            return product;
-          } else {
-            // doc.data() will be undefined in this case
-            console.log("No such document!");
-          }
-        })
-        .catch((error) => {
-          console.log("Error getting document:", error);
+      if (doc.exists && productInCart.quantity >= 1) {
+        // Atomically increment the quantity of the city by 1.
+        try {
+          cartProductRef.update({
+            quantity: firebase.firestore.FieldValue.increment(1),
+          });
+        } catch (e) {
+          console.log(e);
+        }
+      } else {
+        let productRe = db.collection("products").doc(product.id);
+        let doc = await productRe.get();
+        let productData = doc.data();
+        //Saving product to firestore database
+        console.log("Start saving to Cart", productData);
+
+        await cartProductRef.set({
+          image: product.image,
+          title: product.title,
+          category: product.category,
+          price: product.price,
+          quantity: (product.quantity = 1),
         });
+        console.log("end saving to cart");
+      }
     },
   },
 };

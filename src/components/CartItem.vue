@@ -1,5 +1,5 @@
 <template>
-  <div class="card mb-2" style="width: 350px; border: none">
+  <div class="card mb-2 mr-4 h-100" style="border: none">
     <div class="row no-gutters">
       <div class="col-sm-4">
         <img
@@ -23,6 +23,7 @@
 
 <script>
 import { db } from "../database";
+import firebase from "firebase/app";
 
 export default {
   name: "CartItem",
@@ -39,19 +40,35 @@ export default {
       this.deleteProduct(this.product);
     },
 
-    deleteProduct(product) {
-      db.collection("cart")
-        .doc(product.id)
-        .delete()
-        .then(() => {
-          console.log("Document successfully deleted!");
-        })
-        .catch((error) => {
-          console.error("Error removing document: ", error);
-        });
+    async deleteProduct(product) {
+      console.log("start checking");
+      let cartProductRef = db.collection("cart").doc(product.id);
+      let doc = await cartProductRef.get();
+      let productInCart = doc.data();
+
+      console.log("end checking, existant product", productInCart);
+
+      if (doc.exists && doc.data().quantity > 0) {
+        // Atomically decrement the quantity of the product by 1.
+        try {
+          cartProductRef.update({
+            quantity: firebase.firestore.FieldValue.increment(-1),
+          });
+        } catch (e) {
+          console.log(e);
+        }
+      } else {
+        db.collection("cart")
+          .doc(product.id)
+          .delete()
+          .then(() => {
+            console.log("Document successfully deleted!");
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      }
     },
   },
 };
 </script>
-
-<style scoped></style>

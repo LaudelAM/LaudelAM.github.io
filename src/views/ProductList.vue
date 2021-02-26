@@ -1,15 +1,22 @@
 <template>
-  <div class="container">
-    <div class="row justify-content-center">
-      <div
-        class="col-3 col-md-3 col-sm-6 col-xs p-2"
-        v-for="(productInDb, index) of productsInDb"
-        :key="index"
-      >
-        <ProductDetail v-bind:product="productInDb" />
+  <!--  -->
+  <div class="row no-gutters justify-content-center">
+    <!-- <div class="col-2 align-items-center justify-content-center p-4">
+      <h6 class="card-header text-center">Some Content here</h6>
+    </div> -->
+
+    <div class="col-10 align-items-center justify-content-center">
+      <div class="row row-cols-md-4 row-cols-sm-2">
+        <div
+          class="col mb-4"
+          style="border: none"
+          v-for="(productInDb, index) of productsInDb"
+          :key="index"
+        >
+          <ProductDetail v-bind:product="productInDb" />
+        </div>
       </div>
     </div>
-    <!--  -->
   </div>
 </template>
 
@@ -53,7 +60,6 @@ export default {
           const data = doc.data();
           return { id, ...data };
         });
-        console.log("Loaded products", this.products);
       } catch (error) {
         throw new Error("Something gone wrong!");
       }

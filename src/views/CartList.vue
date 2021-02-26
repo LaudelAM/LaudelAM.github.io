@@ -1,43 +1,43 @@
 <template>
-  <div class="container" style="border: solid transparent">
-    <div class="row">
-      <div class="col-9">
-        <div class="row row-cols-2 justify-content-center">
-          <div
-            class="col-sm"
-            v-for="(productInCartDb, index) in productsInCartDb"
-            :key="index"
-          >
-            <CartItem :product="productInCartDb" />
-          </div>
-        </div>
-      </div>
-
-      <div class="col-3 p-3">
-        <div class="card">
-          <ul class="list-group list-group-flush">
-            <li class="list-group-item" style="border: none">
-              Subtotal
-              <span class="badge badge-light float-right">R{{ subtotal }}</span>
-            </li>
-            <li class="list-group-item" style="border: none">
-              VAT
-              <span class="badge badge-light float-right">14%</span>
-            </li>
-            <li class="list-group-item" style="border: none">
-              Total
-              <span class="badge badge-light float-right">R{{ getTotal }}</span>
-            </li>
-          </ul>
-        </div>
-        <button
-          type="button"
-          v-on:click="checkoutProduct"
-          class="btn btn-secondary btn-sm btn-block mt-2"
+  <div class="row no-gutters justify-content-center">
+    <div class="col-9 pr-2 justify-content-center">
+      <div class="row no-gutters row-cols-md-2 row-cols-sm-2">
+        <div
+          class="col mb-2"
+          style="border: none"
+          v-for="(productInCart, index) of productsInCart"
+          :key="index"
         >
-          Checkout
-        </button>
+          <CartItem v-bind:product="productInCart" />
+        </div>
       </div>
+    </div>
+    <!--  -->
+    <!--  -->
+    <div class="col-3 p-3">
+      <div class="card">
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item" style="border: none">
+            Subtotal
+            <span class="badge badge-light float-right">R{{ subtotal }}</span>
+          </li>
+          <li class="list-group-item" style="border: none">
+            VAT
+            <span class="badge badge-light float-right">14%</span>
+          </li>
+          <li class="list-group-item" style="border: none">
+            Total
+            <span class="badge badge-light float-right">R{{ getTotal }}</span>
+          </li>
+        </ul>
+      </div>
+      <button
+        type="button"
+        v-on:click="checkoutProduct"
+        class="btn btn-secondary btn-sm btn-block mt-2"
+      >
+        Checkout
+      </button>
     </div>
   </div>
 </template>
@@ -81,7 +81,12 @@ export default {
     },
 
     subtotal() {
-      return this.roundToTwo(this.$store.getters.subtotalCalculation);
+      // return this.roundToTwo(this.$store.getters.subtotalCalculation);
+      let subtotal = this.products.reduce(
+        (accumulator, current) => accumulator + current.price * current.quantity,
+        0
+      );
+      return this.roundToTwo(subtotal);
     },
 
     getTotal() {
@@ -89,7 +94,7 @@ export default {
       return this.roundToTwo(total);
     },
 
-    productsInCartDb() {
+    productsInCart() {
       return this.products;
     },
   },

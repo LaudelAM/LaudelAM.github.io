@@ -17,21 +17,6 @@
           </div>
 
           <div class="form-group">
-            <label for="email" class="col-md-3 control-label">Email</label>
-            <div class="col-md-9">
-              <input
-                type="text"
-                class="form-control"
-                name="email"
-                v-model="input.email"
-                placeholder="Email Address"
-                pattern="^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$"
-                required
-              />
-            </div>
-          </div>
-
-          <div class="form-group">
             <label for="firstname" class="col-md-3 control-label">First Name</label>
             <div class="col-md-9">
               <input
@@ -59,6 +44,22 @@
               />
             </div>
           </div>
+
+          <div class="form-group">
+            <label for="email" class="col-md-3 control-label">Email</label>
+            <div class="col-md-9">
+              <input
+                type="text"
+                class="form-control"
+                name="email"
+                v-model="input.email"
+                placeholder="Email Address"
+                pattern="^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$"
+                required
+              />
+            </div>
+          </div>
+
           <div class="form-group">
             <label for="password" class="col-md-3 control-label">Password</label>
             <div class="col-md-9">

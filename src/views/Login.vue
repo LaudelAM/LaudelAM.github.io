@@ -75,7 +75,7 @@ const Toast = Swal.mixin({
   toast: true,
   position: "center",
   showConfirmButton: false,
-  timer: 2000,
+  timer: 2500,
   timerProgressBar: true,
   didOpen: (toast) => {
     toast.addEventListener("mouseenter", Swal.stopTimer);
@@ -107,8 +107,7 @@ export default {
       } else {
         user = await this.authenticate(this.input.email, this.input.password);
 
-        if (user) {
-          console.log(user);
+        if (user != null) {
           this.$store.commit("setUser", user);
 
           Toast.fire({
@@ -121,27 +120,36 @@ export default {
         } else {
           Toast.fire({
             icon: "error",
-            title: "There is no such user <br> Please register if new user. :)",
+            title: "Couldn't authenticate <br> Please check your email or password :)",
           });
         }
       }
     },
 
     async authenticate(email, password) {
-      let response = await firebase.auth().signInWithEmailAndPassword(email, password);
-      let user = response.user;
+      try {
+        let userCredential = await firebase
+          .auth()
+          .signInWithEmailAndPassword(email, password);
 
-      if (user) {
-        // User is signed in.
-        user = {
-          name: user.displayName,
-          email: user.email,
-          emailVerified: user.emailVerified,
-          uid: user.uid,
-        };
+        console.log(userCredential);
+
+        let user = userCredential.user;
+
+        if (user) {
+          // User is signed in.
+          user = {
+            name: user.displayName,
+            email: user.email,
+            emailVerified: user.emailVerified,
+            uid: user.uid,
+          };
+        }
+        return user;
+      } catch (e) {
+        console.log(e.message);
+        return null;
       }
-
-      return user;
     },
   },
 };

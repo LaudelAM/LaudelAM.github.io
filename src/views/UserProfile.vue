@@ -18,18 +18,18 @@
               v-model="input.firstname"
               pattern="[^\d]+"
               id="inputFirstname"
-              :placeholder="[[getFirstname]]"
+              value="getFirstname"
             />
           </div>
           <div class="form-group col-md-6">
             <label for="inputLastname" class="text-capitalize">Lastname</label>
             <input
-              type="lasttname"
+              type="lastname"
               class="form-control text-capitalize"
               v-model="input.lastname"
               pattern="[^\d]+"
               id="inputLastname"
-              :placeholder="[[getLastname]]"
+              value="getLastname"
             />
           </div>
           <div class="form-group col-md-6">
@@ -39,35 +39,28 @@
               class="form-control"
               v-model="input.email"
               pattern="^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$"
-              id="inputEmail4"
-              :placeholder="[[getEmail]]"
+              id="inputEmail"
+              value="getEmail"
             />
           </div>
+
           <div class="form-group col-md-6">
-            <label for="inputPassword4">Password</label>
+            <label for="inputAddress">Residential Address</label>
             <input
-              type="password"
-              class="form-control"
-              v-model="input.password"
-              pattern="[\dA-Za-z]{6,}"
-              id="inputPassword"
-              placeholder="password"
+              type="text"
+              class="form-control text-capitalize"
+              v-model="input.address"
+              id="inputAddress"
+              value="getAddress"
             />
           </div>
-        </div>
-        <div class="form-group">
-          <label for="inputAddress">Residential Address</label>
-          <input
-            type="text"
-            class="form-control text-capitalize"
-            v-model="input.address"
-            id="inputAddress"
-            :placeholder="[[getAddress]]"
-          />
         </div>
         <button type="submit" class="btn btn-primary" v-on:click="saveUserProfile">
           Save
         </button>
+        <router-link class="text-primary" style="float: right" to="/passwordChange"
+          >Change password here</router-link
+        >
       </form>
     </div>
     <!-- -->
@@ -91,18 +84,17 @@ const Toast = Swal.mixin({
     toast.addEventListener("mouseleave", Swal.resumeTimer);
   },
 });
+
 export default {
   name: "UserProfile",
 
   data() {
     return {
-      userProfile: Object,
       input: {
-        firstname: "",
-        lastname: "",
-        email: "",
-        address: "",
-        password: "",
+        firstname: null,
+        lastname: null,
+        email: null,
+        address: null,
       },
     };
   },
@@ -116,19 +108,19 @@ export default {
       return this.$store.getters.isLoggedIn;
     },
     getFirstname() {
-      return this.userProfile.firstname;
+      return this.input.firstname;
     },
 
     getLastname() {
-      return this.userProfile.lastname;
+      return this.input.lastname;
     },
 
     getEmail() {
-      return this.userProfile.email;
+      return this.input.email;
     },
 
     getAddress() {
-      return this.userProfile.address;
+      return this.input.address;
     },
   },
 
@@ -138,46 +130,36 @@ export default {
       let doc = await userRef.get();
 
       if (doc.exists) {
-        this.userProfile = doc.data();
+        this.input = doc.data();
       }
     },
 
     async saveUserProfile() {
-      if (
-        this.input.firstname == "" ||
-        /[0-9]+/g.test(this.input.firstname) ||
-        this.input.lastname == "" ||
-        /[0-9]+/g.test(this.input.lastname) ||
-        this.input.email == "" ||
-        this.input.password == "" ||
-        /[^A-Za-z0-9]+/g.test(this.input.password) ||
-        this.input.password.length < 6
-      ) {
-        Toast.fire({
-          icon: "warning",
-          title: "Please fill in the missing detail(s)",
-        });
-      } else {
-        console.log("Start updating profile to DB");
-        let userRef = db.collection("users").doc(this.getUser.email);
-        await userRef.set({
-          firstname: this.input.firstname,
-          lastname: this.input.lastname,
-          email: this.input.email,
-          address: this.input.address,
-        });
-        console.log("End updating profile to DB");
+      //Update profile in DB
+      console.log("Start updating profile in DB");
+      let userRef = await db.collection("users").doc(this.getUser.email);
 
-        console.log("Start updating credentials");
-        let user = await firebase.auth().currentUser;
+      userRef.update({
+        firstname: this.input.firstname,
+        lastname: this.input.lastname,
+        email: this.input.email,
+        address: this.input.address,
+      });
+      console.log("End updating profile in DB", userRef);
 
-        user.updateEmail(this.input.email);
-        user.updatePassword(this.input.password);
-        user.updateProfile({
-          displayName: this.input.firstname + " " + this.input.lastname,
-        });
-        console.log("End updating credentials");
-      }
+      //Update Credentials
+      console.log("Start updating credentials");
+      let user = await firebase.auth().currentUser;
+
+      user.updateEmail(this.input.email);
+      user.updateProfile({
+        displayName: this.input.firstname + " " + this.input.lastname,
+      });
+      console.log("End updating credentials");
+      Toast.fire({
+        icon: "success",
+        title: "Profile updated",
+      });
     },
   },
 
