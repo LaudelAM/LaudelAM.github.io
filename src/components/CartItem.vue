@@ -14,7 +14,7 @@
           <h5 class="card-title">{{ product.title }}</h5>
           <p class="card-text">R{{ product.price }}</p>
           <b-badge href="#" variant="dark m-3" @click="removeProduct">Remove</b-badge>
-          <b-badge variant="light ">Qty [ {{ product.quantity }} ]</b-badge>
+          <b-badge variant="light ">Qty [ {{ getProductQuantity }} ]</b-badge>
         </div>
       </div>
     </div>
@@ -32,7 +32,11 @@ export default {
     product: Object,
   },
 
-  computed: {},
+  computed: {
+    getProductQuantity() {
+      return this.product.quantity;
+    },
+  },
 
   methods: {
     removeProduct() {

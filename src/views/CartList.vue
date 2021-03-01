@@ -128,7 +128,7 @@ export default {
           const data = doc.data();
           return { id, ...data };
         });
-        console.log("Loaded products", this.products);
+        console.log(this.$store.getters.productsInCart);
         return this.products;
       } catch (error) {
         throw new Error("Something gone wrong!");
