@@ -45,9 +45,6 @@
 <script>
 import CartItem from "../components/CartItem.vue";
 import Swal from "sweetalert2";
-import { db } from "../database";
-
-const query = db.collection("cart");
 
 const Toast = Swal.mixin({
   toast: true,
@@ -89,12 +86,13 @@ export default {
       return this.roundToTwo(total);
     },
 
-    productsInCart() {
-      return this.products;
-    },
+    // productsInCart() {
+    //   return this.products;
+    // },
 
     // getProducts() {
-    //   return this.fetchProducts;
+    //   this.products = this.$store.getters.productsInCart
+    //   return this.products;
     // },
   },
 
@@ -118,26 +116,6 @@ export default {
         });
       }
     },
-
-    async fetchProducts() {
-      try {
-        const { docs } = await query.get();
-
-        this.products = docs.map((doc) => {
-          const { id } = doc;
-          const data = doc.data();
-          return { id, ...data };
-        });
-        console.log(this.$store.getters.productsInCart);
-        return this.products;
-      } catch (error) {
-        throw new Error("Something gone wrong!");
-      }
-    },
-  },
-
-  mounted() {
-    this.fetchProducts();
   },
 };
 </script>

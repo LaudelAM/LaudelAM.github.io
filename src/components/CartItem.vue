@@ -14,7 +14,7 @@
           <h5 class="card-title">{{ product.title }}</h5>
           <p class="card-text">R{{ product.price }}</p>
           <b-badge href="#" variant="dark m-3" @click="removeProduct">Remove</b-badge>
-          <b-badge variant="light ">Qty [ {{ getProductQuantity }} ]</b-badge>
+          <b-badge variant="light ">Qty [ {{ productQuantity }} ]</b-badge>
         </div>
       </div>
     </div>
@@ -22,9 +22,6 @@
 </template>
 
 <script>
-import { db } from "../database";
-import firebase from "firebase/app";
-
 export default {
   name: "CartItem",
 
@@ -33,7 +30,7 @@ export default {
   },
 
   computed: {
-    getProductQuantity() {
+    productQuantity() {
       return this.product.quantity;
     },
   },
@@ -41,37 +38,6 @@ export default {
   methods: {
     removeProduct() {
       this.$store.commit("removeFromCart", this.product);
-      this.deleteProduct(this.product);
-    },
-
-    async deleteProduct(product) {
-      console.log("start checking");
-      let cartProductRef = db.collection("cart").doc(product.id);
-      let doc = await cartProductRef.get();
-      let productInCart = doc.data();
-
-      if (doc.exists && productInCart.quantity > 1) {
-        // Atomically decrement the quantity of the product by 1.
-        try {
-          cartProductRef.update({
-            quantity: firebase.firestore.FieldValue.increment(-1),
-          });
-
-          console.log("updated qty");
-        } catch (e) {
-          console.log(e);
-        }
-      } else if (productInCart.quantity == 1) {
-        db.collection("cart")
-          .doc(product.id)
-          .delete()
-          .then(() => {
-            console.log("Document successfully deleted!");
-          })
-          .catch((error) => {
-            console.error(error);
-          });
-      }
     },
   },
 };
