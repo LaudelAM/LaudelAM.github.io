@@ -3,10 +3,25 @@ export default {
     products: [],
   }),
 
+  getters: {
+    productsInCart(state) {
+      return state.products;
+    },
+
+    subtotalCalculation(state) {
+      let subtotal = state.products.reduce(
+        (accumulator, current) =>
+          accumulator + current.price * current.quantity,
+        0
+      );
+      return subtotal;
+    },
+  },
+
   mutations: {
     addToCart(state, product) {
       let findProduct = state.products.find((data) => data.id === product.id);
-      
+
       if (!findProduct) {
         product.quantity = 1;
         state.products.push(product);
@@ -25,21 +40,6 @@ export default {
       } else if (findProduct.quantity == 1) {
         state.products.splice(state.products.indexOf(findProduct), 1);
       }
-    },
-  },
-
-  getters: {
-    productsInCart(state) {
-      return state.products;
-    },
-
-    subtotalCalculation(state) {
-      let subtotal = state.products.reduce(
-        (accumulator, current) =>
-          accumulator + (current.price * current.quantity),
-        0
-      );
-      return subtotal;
     },
   },
 };

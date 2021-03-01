@@ -36,7 +36,7 @@ export default {
 
   methods: {
     removeProduct() {
-      // this.$store.commit("removeFromCart", this.product);
+      this.$store.commit("removeFromCart", this.product);
       this.deleteProduct(this.product);
     },
 
@@ -46,18 +46,18 @@ export default {
       let doc = await cartProductRef.get();
       let productInCart = doc.data();
 
-      console.log("end checking, existant product", productInCart);
-
-      if (doc.exists && doc.data().quantity > 0) {
+      if (doc.exists && productInCart.quantity > 1) {
         // Atomically decrement the quantity of the product by 1.
         try {
           cartProductRef.update({
             quantity: firebase.firestore.FieldValue.increment(-1),
           });
+
+          console.log("updated qty");
         } catch (e) {
           console.log(e);
         }
-      } else {
+      } else if (productInCart.quantity == 1) {
         db.collection("cart")
           .doc(product.id)
           .delete()

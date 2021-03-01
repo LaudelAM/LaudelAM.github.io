@@ -5,10 +5,10 @@
         <div
           class="col mb-2"
           style="border: none"
-          v-for="(productInCart, index) of productsInCart"
+          v-for="(getProductInCart, index) of getProductsInCart"
           :key="index"
         >
-          <CartItem v-bind:product="productInCart" />
+          <CartItem v-bind:product="getProductInCart" />
         </div>
       </div>
     </div>
@@ -72,7 +72,7 @@ export default {
   },
 
   computed: {
-    productsToCart() {
+    getProductsInCart() {
       return this.$store.getters.productsInCart;
     },
 
@@ -81,12 +81,7 @@ export default {
     },
 
     subtotal() {
-      // return this.roundToTwo(this.$store.getters.subtotalCalculation);
-      let subtotal = this.products.reduce(
-        (accumulator, current) => accumulator + current.price * current.quantity,
-        0
-      );
-      return this.roundToTwo(subtotal);
+      return this.roundToTwo(this.$store.getters.subtotalCalculation);
     },
 
     getTotal() {
@@ -97,6 +92,10 @@ export default {
     productsInCart() {
       return this.products;
     },
+
+    // getProducts() {
+    //   return this.fetchProducts;
+    // },
   },
 
   methods: {
@@ -129,7 +128,8 @@ export default {
           const data = doc.data();
           return { id, ...data };
         });
-        // console.log("Loaded products", this.products);
+        console.log("Loaded products", this.products);
+        return this.products;
       } catch (error) {
         throw new Error("Something gone wrong!");
       }

@@ -50,7 +50,7 @@ export default {
 
   methods: {
     addToCart() {
-      // this.$store.commit("addToCart", this.product);
+      this.$store.commit("addToCart", this.product);
       this.addToCartDb(this.product);
       Toast.fire({
         icon: "success",
