@@ -1,5 +1,7 @@
 import firebase from "firebase/app";
 import "firebase/firestore";
+import {store} from "./stores";
+// import authentication from "./stores/authentication"
 
 let firebaseConfig = {
   apiKey: "AIzaSyAfvaitXPRffCORs2xS2Km_bB8aJta1ML8",
@@ -22,3 +24,79 @@ export {TimeStamp, GeoPoint};
 
 // if using Firebase JS SDK < 5.8.0
 db.settings({timestampsInSnapshots: true});
+
+//Get user logged in
+const getUser = store.getters.getUser;
+const isLoggedIn = store.getters.isLoggedIn;
+const getProducts = store.getters.productsInCart;
+
+//Products operations in DB
+//Adding to Cart collection
+export const addToCartDB = async () => {
+  if (isLoggedIn == true) {
+    console.log("start checking in DB");
+    let cartUserRef = db.collection("carts").doc(getUser.email);
+    let doc = await cartUserRef.get();
+    let products = null;
+
+    if (doc.exists) {
+      // If user cart exists
+      try {
+        console.log("saving to user cart");
+        products = {Products: getProducts};
+        // console.log(getProducts);
+        cartUserRef.set(products);
+      } catch (e) {
+        console.log(e);
+      }
+    } else {
+      // console.log("create user cart");
+      products = {Products: getProducts};
+      cartUserRef.set(products);
+    }
+  }
+};
+
+export const updateStoreFromDB = async () => {
+  let getUser = await store.getters.getUser;
+  let cartUserRef = db.collection("carts").doc(getUser.email);
+  let doc = await cartUserRef.get();
+
+  if (doc.exists) {
+    try {
+      let products = doc.data().Products;
+
+      if (products.length > 0) {
+        store.commit("cartProductsList", products);
+        let pro = store.getters.productsInCart;
+        console.log(pro);
+      } else if (products.length == 0 && getProducts.length != 0) {
+        let productInCart = {Products: getProducts};
+        cartUserRef.set(productInCart);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  }
+};
+
+//Removing from Cart collection
+export const removeFromCartDB = async () => {
+  if (isLoggedIn == true) {
+    console.log("start checking in DB");
+    let cartUserRef = db.collection("carts").doc(getUser.email);
+    let doc = await cartUserRef.get();
+
+    try {
+      if (doc.exists) {
+        // Update products in user cart
+        console.log("Update user cart");
+        let products = {Products: getProducts};
+
+        cartUserRef.set(products);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  }
+};

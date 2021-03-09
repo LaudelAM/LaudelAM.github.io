@@ -72,6 +72,7 @@
 import firebase from "firebase/app";
 import "firebase/auth";
 import Swal from "sweetalert2";
+import { updateStoreFromDB } from "../database";
 
 const Toast = Swal.mixin({
   toast: true,
@@ -94,11 +95,20 @@ export default {
     userLoggedIn() {
       return this.$store.getters.isLoggedIn;
     },
+
+    cartProductList() {
+      return this.$store.getters.productsInCart;
+    },
   },
 
   methods: {
     navigateToCart() {
-      this.$router.push("/cart").catch((err) => err);
+      if (this.userLoggedIn == true) {
+        updateStoreFromDB();
+        this.$router.push("/cart").catch((err) => err);
+      } else {
+        this.$router.push("/cart").catch((err) => err);
+      }
     },
 
     logout() {

@@ -46,8 +46,15 @@ export default {
     product: Object,
   },
 
+  computed: {
+    userLoggedIn() {
+      return this.$store.getters.isLoggedIn;
+    },
+  },
+
   methods: {
     addToCart() {
+      console.log(this.product);
       this.$store.commit("addToCart", this.product);
       Toast.fire({
         icon: "success",

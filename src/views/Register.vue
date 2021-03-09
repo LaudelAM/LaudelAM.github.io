@@ -1,96 +1,66 @@
 <template>
-  <div class="container justify-content-center">
-    <div
-      id="signupbox"
-      style="display: none; margin-top: 50px"
-      class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2"
-    ></div>
-    <div class="panel panel-info p-4">
-      <div class="panel-heading">
-        <div class="panel-title text-center">Sign Up</div>
-      </div>
-      <div class="panel-body">
-        <form id="signupform" class="form-horizontal" role="form">
-          <div id="signupalert" style="display: none" class="alert alert-danger">
-            <p>Error:</p>
-            <span></span>
+  <div class="d-flex flex-column align-items-center justify-content-center">
+    <div class="card mb-3 p-4 w-50" style="border: none">
+      <h5 class="card-header text-center">Sign up</h5>
+      <img
+        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTTxYGdcuCvhkHUPzFkrnC-Emi7gWvIjOUUgQ&usqp=CAU"
+        class="card-img-thumbnail align-self-center rounded mb-2"
+        alt="Profile picture"
+      />
+      <!--  -->
+      <form>
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label for="inputFirstname" class="text-capitalize">Firstname</label>
+            <input
+              type="firstname"
+              class="form-control text-capitalize"
+              v-model="input.firstname"
+              pattern="[^\d]+"
+              id="inputFirstname"
+              placeholder="Firstname"
+            />
+          </div>
+          <div class="form-group col-md-6">
+            <label for="inputLastname" class="text-capitalize">Lastname</label>
+            <input
+              type="lastname"
+              class="form-control text-capitalize"
+              v-model="input.lastname"
+              pattern="[^\d]+"
+              id="inputLastname"
+              placeholder="Lastname"
+            />
+          </div>
+          <div class="form-group col-md-6">
+            <label for="inputEmail">Email</label>
+            <input
+              type="email"
+              class="form-control"
+              v-model="input.email"
+              pattern="^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$"
+              id="inputEmail"
+              placeholder="Email address"
+            />
           </div>
 
-          <div class="form-group">
-            <label for="firstname" class="col-md-3 control-label">First Name</label>
-            <div class="col-md-9">
-              <input
-                type="text"
-                class="form-control text-capitalize"
-                name="firstname"
-                v-model="input.firstname"
-                placeholder="First Name"
-                pattern="[^\d]+"
-                required
-              />
-            </div>
+          <div class="form-group col-md-6">
+            <label for="inputPassword">Password</label>
+            <input
+              type="password"
+              class="form-control text-capitalize"
+              v-model="input.password"
+              id="inputPassword"
+              placeholder="Password"
+            />
           </div>
-          <div class="form-group">
-            <label for="lastname" class="col-md-3 control-label">Last Name</label>
-            <div class="col-md-9">
-              <input
-                type="text"
-                class="form-control text-capitalize"
-                name="lastname"
-                v-model="input.lastname"
-                placeholder="Last Name"
-                pattern="[^\d]+"
-                required
-              />
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label for="email" class="col-md-3 control-label">Email</label>
-            <div class="col-md-9">
-              <input
-                type="text"
-                class="form-control"
-                name="email"
-                v-model="input.email"
-                placeholder="Email Address"
-                pattern="^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$"
-                required
-              />
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label for="password" class="col-md-3 control-label">Password</label>
-            <div class="col-md-9">
-              <input
-                type="password"
-                class="form-control"
-                name="password"
-                v-model="input.password"
-                placeholder="Password"
-                pattern="[\dA-Za-z]{6,}"
-                required
-              />
-            </div>
-          </div>
-
-          <div class="form-group">
-            <!-- Button -->
-            <div class="col-md-offset-3 col-md-9">
-              <button
-                id="btn-signup"
-                type="button"
-                class="btn btn-success"
-                v-on:click="submit"
-              >
-                <i class="icon-hand-right"></i> Sign Up
-              </button>
-            </div>
-          </div>
-        </form>
-      </div>
+        </div>
+        <button id="btn-signup" type="button" class="btn btn-success" v-on:click="submit">
+          <i class="icon-hand-right"></i> Sign Up
+        </button>
+      </form>
     </div>
+    <!-- -->
   </div>
 </template>
 

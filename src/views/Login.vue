@@ -1,65 +1,51 @@
 <template>
   <div class="container">
-    <div
-      id="loginbox"
-      style="margin-top: 50px"
-      class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2"
-    >
-      <div class="panel panel-info p-2">
-        <div class="panel-heading">
-          <div class="panel-title">Sign In</div>
-          <div style="float: right; font-size: 80%; position: relative; top: -10px">
-            <a href="#">Forgot password?</a>
-          </div>
-        </div>
-
-        <div style="padding-top: 30px" class="panel-body">
+    <div class="d-flex flex-column align-items-center justify-content-center">
+      <div class="card mb-3 p-8 w-50" style="border: none">
+        <h5 class="card-header text-center mt-4">Login</h5>
+        <form>
           <div
-            style="display: none"
-            id="login-alert"
-            class="alert alert-danger col-sm-12"
-          ></div>
-
-          <form id="loginform" class="form-horizontal" role="form">
-            <div style="margin-bottom: 25px" class="input-group">
-              <span class="input-group-addon"
-                ><i class="glyphicon glyphicon-user"></i
-              ></span>
+            class="form-group d-flex flex-column mt-4 align-items-center justify-content-center"
+          >
+            <div class="d-block-flex">
+              <label for="inputAddress">Email</label>
               <input
-                id="login-username"
                 type="text"
                 class="form-control"
-                name="username"
-                v-model.trim="input.email"
-                placeholder="email"
+                v-model="input.email"
+                pattern="^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$"
+                id="inputEmail"
+                placeholder="Email"
+                value="input.email"
               />
             </div>
-
-            <div style="margin-bottom: 25px" class="input-group">
-              <span class="input-group-addon"
-                ><i class="glyphicon glyphicon-lock"></i
-              ></span>
+            <div class="d-block-flex mt-2">
+              <label for="inputAddress">Password</label>
               <input
-                id="login-password"
                 type="password"
                 class="form-control"
-                name="password"
-                v-model.trim="input.password"
-                placeholder="password"
+                v-model="input.password"
+                pattern="[\dA-Za-z]{6,}"
+                id="inputPasswordConfirm"
+                placeholder="Password"
               />
             </div>
-
-            <div style="margin-top: 10px" class="form-group">
-              <!-- Button -->
-
-              <div class="col-sm-12 controls">
-                <a id="btn-login" href="#" class="btn btn-success" v-on:click="submit"
+            <div class="form-group">
+              <div class="col-sm-12 controls mt-4">
+                <a
+                  id="btn-login"
+                  style="float: left"
+                  href="#"
+                  class="btn btn-success"
+                  v-on:click="submit"
                   >Login
                 </a>
+
+                <!-- <a class="tex-align-right" style="float: right" href="#">Register</a> -->
               </div>
             </div>
-          </form>
-        </div>
+          </div>
+        </form>
       </div>
     </div>
   </div>

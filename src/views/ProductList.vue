@@ -54,10 +54,10 @@ export default {
     async fetchProducts() {
       try {
         const { docs } = await query.get();
-
         this.products = docs.map((doc) => {
           const { id } = doc;
           const data = doc.data();
+          // console.log("fetched products:", data);
           return { id, ...data };
         });
       } catch (error) {

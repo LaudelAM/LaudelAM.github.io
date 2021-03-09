@@ -1,3 +1,5 @@
+// import {db} from "../database";
+
 export default {
   state: () => ({
     products: [],
@@ -5,10 +7,11 @@ export default {
   mutations: {
     setProductsList(state, product) {
       state.products = product;
+      // console.log(product.id);
     },
   },
 
-  actions: {  },
+  actions: {},
 
   getters: {
     allProducts(state) {

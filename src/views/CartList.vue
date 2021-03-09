@@ -13,7 +13,6 @@
       </div>
     </div>
     <!--  -->
-    <!--  -->
     <div class="col-3 p-3">
       <div class="card">
         <ul class="list-group list-group-flush">
@@ -77,6 +76,10 @@ export default {
       return this.$store.getters.isLoggedIn;
     },
 
+    getUser() {
+      return this.$store.getters.getUser;
+    },
+
     subtotal() {
       return this.roundToTwo(this.$store.getters.subtotalCalculation);
     },
@@ -86,14 +89,7 @@ export default {
       return this.roundToTwo(total);
     },
 
-    // productsInCart() {
-    //   return this.products;
-    // },
-
-    // getProducts() {
-    //   this.products = this.$store.getters.productsInCart
-    //   return this.products;
-    // },
+    // displayProductsInUserCart() {},
   },
 
   methods: {
