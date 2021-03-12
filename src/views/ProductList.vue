@@ -1,21 +1,36 @@
 <template>
   <!--  -->
   <div class="row no-gutters justify-content-center">
-    <!-- <div class="col-2 align-items-center justify-content-center p-4">
-      <h6 class="card-header text-center">Some Content here</h6>
-    </div> -->
+    <b-nav-form>
+      <b-form-input
+        size="sm"
+        class="mr-sm-2"
+        v-model="searchInput"
+        placeholder="Search product"
+      ></b-form-input>
+      <b-button size="sm" class="my-2 my-sm-0" type="submit">
+        <b-icon icon="search" aria-label="Help">Search</b-icon></b-button
+      >
+    </b-nav-form>
 
     <div class="col-10 align-items-center justify-content-center">
       <div class="row row-cols-md-4 row-cols-sm-2">
         <div
           class="col mb-4"
           style="border: none"
-          v-for="(productInDb, index) of productsInDb"
+          v-for="(productInDb, index) of searchProduct"
           :key="index"
         >
           <ProductDetail v-bind:product="productInDb" />
         </div>
       </div>
+      <b-pagination
+        align="center"
+        v-model="currentPage"
+        :total-rows="rows"
+        :per-page="perPage"
+        aria-controls="my-products"
+      ></b-pagination>
     </div>
   </div>
 </template>
@@ -24,6 +39,7 @@
 import ProductDetail from "../components/ProductDetail.vue";
 import axios from "axios";
 import { db } from "../database";
+// import products from "../stores/products";
 
 const query = db.collection("products");
 
@@ -37,6 +53,10 @@ export default {
   data() {
     return {
       products: [],
+      searchInput: "",
+      // paginatedItems: [],
+      currentPage: 1,
+      perPage: 8,
     };
   },
 
@@ -48,9 +68,35 @@ export default {
     productsInDb() {
       return this.products;
     },
+
+    rows() {
+      return this.productsInDb.length;
+    },
+
+    searchProduct() {
+      return this.productsInDb.filter((productInDb) => {
+        return productInDb.title.toLowerCase().match(this.searchInput.toLowerCase());
+      });
+    },
+
+    // getPaginatedItems() {
+    //   return this.paginatedItems;
+    // },
   },
 
   methods: {
+    // paginate(page_size, page_number) {
+    //   let productsToParse = this.productsInDb;
+    //   this.paginatedItems = productsToParse.slice(
+    //     page_number * page_size,
+    //     (page_number + 1) * page_size
+    //   );
+    // },
+
+    // onPageChanged(page) {
+    //   this.paginate(this.perPage, page - 1);
+    // },
+
     async fetchProducts() {
       try {
         const { docs } = await query.get();
@@ -72,6 +118,8 @@ export default {
     });
 
     this.fetchProducts();
+
+    // this.paginate(this.perPage, 0);
   },
 };
 </script>

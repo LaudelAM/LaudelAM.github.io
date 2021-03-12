@@ -28,7 +28,7 @@ export default {
     },
 
     addToCart(state, product) {
-      console.log("Search existing product in store");
+      // console.log("Search existing product in store");
       let findProduct = state.products.find((data) => data.id === product.id);
 
       if (!findProduct) {
@@ -37,13 +37,13 @@ export default {
       } else {
         findProduct.quantity += 1;
       }
-      console.log("end search in store");
+      // console.log("end search in store");
 
       addToCartDB();
     },
 
     async removeFromCart(state, product) {
-      console.log("Search existing product in store");
+      // console.log("Search existing product in store");
       let findProduct = state.products.find(
         (data) => data.title === product.title
       );
@@ -53,7 +53,7 @@ export default {
       } else if (findProduct.quantity == 1) {
         state.products.splice(state.products.indexOf(findProduct), 1);
       }
-      console.log("End search in store");
+      // console.log("End search in store");
       // state.products = []
       removeFromCartDB();
     },

@@ -29,20 +29,22 @@ db.settings({timestampsInSnapshots: true});
 const getUser = store.getters.getUser;
 const isLoggedIn = store.getters.isLoggedIn;
 const getProducts = store.getters.productsInCart;
+// const prodProd = store.getters.allProducts;
 
 //Products operations in DB
 //Adding to Cart collection
 export const addToCartDB = async () => {
   if (isLoggedIn == true) {
-    console.log("start checking in DB");
+    // console.log("start checking in DB");
     let cartUserRef = db.collection("carts").doc(getUser.email);
     let doc = await cartUserRef.get();
     let products = null;
+    
 
     if (doc.exists) {
       // If user cart exists
       try {
-        console.log("saving to user cart");
+        // console.log("saving to user cart");
         products = {Products: getProducts};
         // console.log(getProducts);
         cartUserRef.set(products);
@@ -56,6 +58,26 @@ export const addToCartDB = async () => {
     }
   }
 };
+
+// const addAllProducts = async () => {
+//   console.log(prodProd[0].title);
+//   console.log(prodProd.length);
+
+//   for (let i = 0; i < prodProd.length; i++) {
+//     if(prodProd[i].id != 10){
+//       db.collection("products")
+//         .doc(prodProd[i].title)
+//         .set({
+//           id: prodProd[i].id,
+//           title: prodProd[i].title,
+//           price: prodProd[i].price,
+//           category: prodProd[i].category,
+//           description: prodProd[i].description,
+//           image: prodProd[i].image,
+//         });
+//     }
+//   }
+// };
 
 export const updateStoreFromDB = async () => {
   let getUser = await store.getters.getUser;

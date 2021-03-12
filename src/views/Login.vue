@@ -3,9 +3,14 @@
     <div class="d-flex flex-column align-items-center justify-content-center">
       <div class="card mb-3 p-8 w-50" style="border: none">
         <h5 class="card-header text-center mt-4">Login</h5>
+        <img
+          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTTxYGdcuCvhkHUPzFkrnC-Emi7gWvIjOUUgQ&usqp=CAU"
+          class="card-img-thumbnail align-self-center rounded mt-2"
+          alt="Profile picture"
+        />
         <form>
           <div
-            class="form-group d-flex flex-column mt-4 align-items-center justify-content-center"
+            class="form-group d-flex flex-column mt-2 align-items-center justify-content-center"
           >
             <div class="d-block-flex">
               <label for="inputAddress">Email</label>
