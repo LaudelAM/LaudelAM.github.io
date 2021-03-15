@@ -1,8 +1,9 @@
 <template>
   <!--  -->
-  <div class="row no-gutters justify-content-center">
-    <div class="d-block-flex col-10 justify-content-center">
-      <b-nav-form class="align-self-center">
+  <div class="d-flex flex-row no-gutters justify-content-center p-2">
+    <div class="col-10">
+      <!-- Search input -->
+      <b-nav-form class="col-md-6 mr-auto">
         <b-form-input
           size="md"
           class="mr-sm-6"
@@ -18,22 +19,31 @@
           <b-icon icon="search" aria-label="Help">Search</b-icon></b-button
         >
       </b-nav-form>
+
+      <!-- Populate products -->
       <div class="row row-cols-lg-4 row-cols-md-4 row-cols-sm-2 row-cols-xs-2">
         <div
+          id="my-products"
+          :items="displayedProducts"
+          :per-page="perPage"
+          :current-page="currentPage"
           class="col mb-4"
           style="border: none"
-          v-for="(productInDb, index) of productsInDb"
+          v-for="(productInDb, index) of displayedProducts"
           :key="index"
         >
           <ProductDetail v-bind:product="productInDb" />
         </div>
       </div>
-      <b-pagination-nav
-        :link-gen="linkGen"
-        :number-of-pages="10"
+
+      <b-pagination
+        v-model="currentPage"
         align="center"
-        use-router
-      ></b-pagination-nav>
+        pills
+        :total-rows="rows"
+        :per-page="perPage"
+        aria-controls="my-products"
+      ></b-pagination>
     </div>
   </div>
 </template>
@@ -42,7 +52,6 @@
 import ProductDetail from "../components/ProductDetail.vue";
 import axios from "axios";
 import { db } from "../database";
-// import products from "../stores/products";
 
 const query = db.collection("products");
 
@@ -57,8 +66,6 @@ export default {
     return {
       products: [],
       searchInput: "",
-      // productsSearched: [],
-      // paginatedItems: [],
       currentPage: 1,
       perPage: 8,
     };
@@ -73,39 +80,21 @@ export default {
       return this.products;
     },
 
-    // getSearchedProducts() {
-    //   return this.searchProduct;
-    // },
-
     rows() {
       return this.productsInDb.length;
     },
 
-    // getPaginatedItems() {
-    //   return this.paginatedItems;
-    // },
+    displayedProducts() {
+      return this.paginate(this.products);
+    },
   },
 
   methods: {
-    linkGen(pageNum) {
-      return pageNum === 1 ? "?" : `?page=${pageNum}`;
-    },
-    // paginate(page_size, page_number) {
-    //   let productsToParse = this.productsInDb;
-    //   this.paginatedItems = productsToParse.slice(
-    //     page_number * page_size,
-    //     (page_number + 1) * page_size
-    //   );
-    // },
-
-    // onPageChanged(page) {
-    //   this.paginate(this.perPage, page - 1);
-    // },
-
     async searchProducts() {
       try {
         this.products = [];
         let result = await db.collection("products").get();
+        // this.firstBatch();
         result.docs.forEach((doc) => {
           let product = doc.data();
           if (
@@ -115,7 +104,6 @@ export default {
             this.products.push(product);
         });
         console.log(this.products);
-        // return this.products;
       } catch (e) {
         console.log(e);
       }
@@ -127,12 +115,18 @@ export default {
         this.products = docs.map((doc) => {
           const { id } = doc;
           const data = doc.data();
-          // console.log("fetched products:", data);
+
           return { id, ...data };
         });
       } catch (error) {
         throw new Error("Something gone wrong!");
       }
+    },
+
+    paginate(products) {
+      let from = this.currentPage * this.perPage - this.perPage;
+      let to = this.currentPage * this.perPage;
+      return products.slice(from, to);
     },
   },
 
@@ -142,8 +136,6 @@ export default {
     });
 
     this.fetchProducts();
-
-    // this.paginate(this.perPage, 0);
   },
 };
 </script>
