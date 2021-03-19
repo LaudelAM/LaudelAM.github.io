@@ -24,15 +24,15 @@
       <div class="row row-cols-lg-4 row-cols-md-4 row-cols-sm-2 row-cols-xs-2">
         <div
           id="my-products"
-          :items="displayedProducts"
+          :items="paginatedProducts"
           :per-page="perPage"
           :current-page="currentPage"
           class="col mb-4"
           style="border: none"
-          v-for="(productInDb, index) of displayedProducts"
+          v-for="(paginateProduct, index) of paginateProducts"
           :key="index"
         >
-          <ProductDetail v-bind:product="productInDb" />
+          <ProductDetail v-bind:product="paginateProduct" />
         </div>
       </div>
 
@@ -40,10 +40,12 @@
         v-model="currentPage"
         align="center"
         pills
-        :total-rows="rows"
+        :total-rows="totalPages"
         :per-page="perPage"
+        @input="paginate"
         aria-controls="my-products"
       ></b-pagination>
+      <p class="mt-3">Current Page: {{ currentPage }}</p>
     </div>
   </div>
 </template>
@@ -52,6 +54,7 @@
 import ProductDetail from "../components/ProductDetail.vue";
 import axios from "axios";
 import { db } from "../database";
+// import products from "../stores/products";
 
 const query = db.collection("products");
 
@@ -66,12 +69,19 @@ export default {
     return {
       products: [],
       searchInput: "",
+      paginatedProducts: [],
       currentPage: 1,
       perPage: 8,
+      totalPages: 0,
+      pages: 0,
     };
   },
 
   computed: {
+    numberOfPages() {
+      return this.productsInDb.length / this.perPage;
+    },
+
     getProducts() {
       return this.$store.getters.allProducts;
     },
@@ -80,13 +90,17 @@ export default {
       return this.products;
     },
 
-    rows() {
-      return this.productsInDb.length;
+    paginateProducts() {
+      return this.paginatedProducts;
     },
 
-    displayedProducts() {
-      return this.paginate(this.products);
+    getPage() {
+      return this.paginate(this.getCurrentPage);
     },
+  },
+
+  created() {
+    this.showPage();
   },
 
   methods: {
@@ -94,7 +108,7 @@ export default {
       try {
         this.products = [];
         let result = await db.collection("products").get();
-        // this.firstBatch();
+
         result.docs.forEach((doc) => {
           let product = doc.data();
           if (
@@ -103,7 +117,48 @@ export default {
           )
             this.products.push(product);
         });
-        console.log(this.products);
+      } catch (e) {
+        console.log(e);
+      }
+    },
+
+    showPage() {
+      db.collection("products")
+        .get()
+        .then((res) => {
+          this.totalPages = res.size;
+          this.pages = Math.ceil(this.totalPages / this.perPage);
+        });
+
+      db.collection("products")
+        .limit(this.perPage)
+        .orderBy("id", "asc")
+        .get()
+        .then((query) => {
+          query.forEach((item) => {
+            this.paginatedProducts.push(item.data());
+          });
+          console.log(this.paginatedProducts);
+        });
+    },
+
+    async paginate() {
+      try {
+        this.paginatedProducts = [];
+        let startAt = this.currentPage * this.perPage - this.perPage + 1;
+        // let endAt = this.getCurrentPage * this.perPage - this.perPage + this.perPage;
+
+        let result = db.collection("products").orderBy("id", "asc");
+
+        let prod = await result.limit(this.perPage).startAt(startAt).get();
+
+        prod.docs.forEach((doc) => {
+          let prod = doc.data();
+          this.paginatedProducts.push(prod);
+        });
+
+        console.log(this.paginatedProducts);
+        return this.paginatedProducts;
       } catch (e) {
         console.log(e);
       }
@@ -121,12 +176,6 @@ export default {
       } catch (error) {
         throw new Error("Something gone wrong!");
       }
-    },
-
-    paginate(products) {
-      let from = this.currentPage * this.perPage - this.perPage;
-      let to = this.currentPage * this.perPage;
-      return products.slice(from, to);
     },
   },
 
