@@ -3,7 +3,7 @@ import "firebase/firestore";
 import {store} from "./stores";
 // import authentication from "./stores/authentication"
 
-let firebaseConfig = {
+const firebaseConfig = {
   apiKey: "AIzaSyAfvaitXPRffCORs2xS2Km_bB8aJta1ML8",
   authDomain: "my-store-46d7f.firebaseapp.com",
   projectId: "my-store-46d7f",
@@ -14,11 +14,13 @@ let firebaseConfig = {
   measurementId: "G-4R2BGE8S20",
 };
 
+// const firestoreService = require("firestore-export-import");
+// const serviceAccount = require("./serviceAccount.json");
+
 // Get a Firestore instance
 export const db = firebase.initializeApp(firebaseConfig).firestore();
 
 // Export types that exists in Firestore
-// This is not always necessary, but it's used in other examples
 const {TimeStamp, GeoPoint} = firebase.firestore;
 export {TimeStamp, GeoPoint};
 
@@ -32,6 +34,7 @@ const getProducts = store.getters.productsInCart;
 // const prodProd = store.getters.allProducts;
 
 //Products operations in DB
+
 //Adding to Cart collection
 export const addToCartDB = async () => {
   if (isLoggedIn == true) {
@@ -39,7 +42,6 @@ export const addToCartDB = async () => {
     let cartUserRef = db.collection("carts").doc(getUser.email);
     let doc = await cartUserRef.get();
     let products = null;
-    
 
     if (doc.exists) {
       // If user cart exists
@@ -48,24 +50,27 @@ export const addToCartDB = async () => {
         products = {Products: getProducts};
         // console.log(getProducts);
         cartUserRef.set(products);
+        
+        // addAllProducts(products)
       } catch (e) {
         console.log(e);
       }
     } else {
       // console.log("create user cart");
-      products = {Products: getProducts};
+      products = {items: getProducts};
       cartUserRef.set(products);
+      // fetchDataFromDB();
     }
   }
 };
 
-// const addAllProducts = async () => {
+// const addAllProducts = async (prodProd) => {
 //   console.log(prodProd[0].title);
 //   console.log(prodProd.length);
 
 //   for (let i = 0; i < prodProd.length; i++) {
-//     if(prodProd[i].id != 10){
-//       db.collection("products")
+//     if (prodProd[i].id != 10) {
+//       db.collection("product")
 //         .doc(prodProd[i].title)
 //         .set({
 //           id: prodProd[i].id,

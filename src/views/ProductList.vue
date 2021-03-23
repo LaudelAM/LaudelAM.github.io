@@ -8,7 +8,7 @@
           size="md"
           class="mr-sm-6"
           v-model="searchInput"
-          placeholder="Men, Women, Electronics..."
+          placeholder="Name, Category"
         ></b-form-input>
         <b-button
           size="sm"
@@ -24,9 +24,9 @@
       <div class="row row-cols-lg-4 row-cols-md-4 row-cols-sm-2 row-cols-xs-2">
         <div
           id="my-products"
-          :items="paginatedProducts"
+          :items="paginateProducts"
           :per-page="perPage"
-          :current-page="currentPage"
+          :current-page="paginateProducts"
           class="col mb-4"
           style="border: none"
           v-for="(paginateProduct, index) of paginateProducts"
@@ -40,23 +40,23 @@
         v-model="currentPage"
         align="center"
         pills
-        :total-rows="totalPages"
+        :total-rows="total"
         :per-page="perPage"
-        @input="paginate"
+        @input="fetchProducts"
         aria-controls="my-products"
       ></b-pagination>
-      <p class="mt-3">Current Page: {{ currentPage }}</p>
+      <!-- <p>{{ getNew }}</p> -->
     </div>
   </div>
 </template>
 
 <script>
 import ProductDetail from "../components/ProductDetail.vue";
-import axios from "axios";
+// import axios from "axios";
 import { db } from "../database";
 // import products from "../stores/products";
-
-const query = db.collection("products");
+// import { fetchDataFromDB } from "../database";
+// import products from "../stores/products";
 
 export default {
   components: {
@@ -72,16 +72,12 @@ export default {
       paginatedProducts: [],
       currentPage: 1,
       perPage: 8,
-      totalPages: 0,
+      total: 0,
       pages: 0,
     };
   },
 
   computed: {
-    numberOfPages() {
-      return this.productsInDb.length / this.perPage;
-    },
-
     getProducts() {
       return this.$store.getters.allProducts;
     },
@@ -93,71 +89,54 @@ export default {
     paginateProducts() {
       return this.paginatedProducts;
     },
-
-    getPage() {
-      return this.paginate(this.getCurrentPage);
-    },
   },
 
   created() {
-    this.showPage();
+    this.fetchProducts();
   },
 
   methods: {
+    // async fetchDataFromDB() {
+    //   try {
+    //     this.products = [];
+    //     let startAt = this.currentPage * this.perPage - this.perPage;
+    //     let endtAt = this.currentPage * this.perPage - this.perPage + this.perPage;
+
+    //     let result = await db.collection("productsNew").doc("data").get();
+    //     this.total = result.data().items.length;
+    //     this.pages = Math.ceil(this.total / this.perPage);
+
+    //     for (let i = startAt; i < endtAt; i++) {
+    //       let product = result.data().items[i];
+    //       if (product != null) this.products.push(product);
+    //     }
+    //     console.log(this.products);
+
+    //     return this.products;
+    //   } catch (e) {
+    //     console.log(e);
+    //   }
+    // },
+
     async searchProducts() {
       try {
-        this.products = [];
-        let result = await db.collection("products").get();
-
-        result.docs.forEach((doc) => {
-          let product = doc.data();
-          if (
-            product.title.toLowerCase().match(this.searchInput.toLowerCase()) ||
-            product.category.toLowerCase().match(this.searchInput.toLowerCase())
-          )
-            this.products.push(product);
-        });
-      } catch (e) {
-        console.log(e);
-      }
-    },
-
-    showPage() {
-      db.collection("products")
-        .get()
-        .then((res) => {
-          this.totalPages = res.size;
-          this.pages = Math.ceil(this.totalPages / this.perPage);
-        });
-
-      db.collection("products")
-        .limit(this.perPage)
-        .orderBy("id", "asc")
-        .get()
-        .then((query) => {
-          query.forEach((item) => {
-            this.paginatedProducts.push(item.data());
-          });
-          console.log(this.paginatedProducts);
-        });
-    },
-
-    async paginate() {
-      try {
         this.paginatedProducts = [];
-        let startAt = this.currentPage * this.perPage - this.perPage + 1;
-        // let endAt = this.getCurrentPage * this.perPage - this.perPage + this.perPage;
+        let result = await db.collection("productsNew").doc("data").get();
+        let product = result.data().items;
 
-        let result = db.collection("products").orderBy("id", "asc");
+        for (let i = 0; i < product.length; i++) {
+          if (
+            product[i].name.toLowerCase().match(this.searchInput.toLowerCase()) ||
+            product[i].category.toLowerCase().match(this.searchInput.toLowerCase())
+          ) {
+            let searchedProduct = product[i];
+            this.paginatedProducts.push(searchedProduct);
+          }
+        }
+        this.total = this.paginatedProducts.length;
+        console.log(this.total);
+        this.pages = Math.ceil(this.total / this.perPage);
 
-        let prod = await result.limit(this.perPage).startAt(startAt).get();
-
-        prod.docs.forEach((doc) => {
-          let prod = doc.data();
-          this.paginatedProducts.push(prod);
-        });
-
-        console.log(this.paginatedProducts);
         return this.paginatedProducts;
       } catch (e) {
         console.log(e);
@@ -166,25 +145,25 @@ export default {
 
     async fetchProducts() {
       try {
-        const { docs } = await query.get();
-        this.products = docs.map((doc) => {
-          const { id } = doc;
-          const data = doc.data();
+        this.paginatedProducts = [];
+        let startAt = this.currentPage * this.perPage - this.perPage;
+        let endtAt = this.currentPage * this.perPage - this.perPage + this.perPage;
 
-          return { id, ...data };
-        });
-      } catch (error) {
-        throw new Error("Something gone wrong!");
+        let result = await db.collection("productsNew").doc("data").get();
+        let product = result.data().items;
+        this.total = product.length;
+        this.pages = Math.ceil(this.total / this.perPage);
+
+        for (let i = startAt; i < endtAt; i++) {
+          if (product[i] != null) this.paginatedProducts.push(product[i]);
+        }
+
+        // console.log(this.paginatedProducts);
+        return this.paginatedProducts;
+      } catch (e) {
+        console.log(e);
       }
     },
-  },
-
-  mounted() {
-    axios.get("https://fakestoreapi.com/products").then((response) => {
-      this.$store.commit("setProductsList", response.data);
-    });
-
-    this.fetchProducts();
   },
 };
 </script>

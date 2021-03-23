@@ -44,9 +44,7 @@ export default {
 
     async removeFromCart(state, product) {
       // console.log("Search existing product in store");
-      let findProduct = state.products.find(
-        (data) => data.title === product.title
-      );
+      let findProduct = state.products.find((data) => data.id === product.id);
 
       if (findProduct && findProduct.quantity > 1) {
         findProduct.quantity = findProduct.quantity - 1;

@@ -1,11 +1,15 @@
 <template>
   <!--  -->
   <div class="card h-100">
-    <img :src="product.image" class="card-img-thumbnail img-responsive" alt="..." />
+    <div class="image hover-overlay ripple">
+      <img :src="product.url" class="card-img-thumbnail img-responsive" alt="..." />
+    </div>
+
     <div class="card-body">
-      <h5 class="card-title">{{ product.title }}</h5>
+      <h5 class="card-title">{{ product.name }}</h5>
     </div>
     <ul class="list-group list-group-flush">
+      <li class="list-group-item text-center">{{ product.description }}</li>
       <li class="list-group-item text-center">{{ product.category }}</li>
       <li class="list-group-item text-left">
         R{{ product.price }}
@@ -55,7 +59,7 @@ export default {
 
   methods: {
     addToCart() {
-      console.log(this.product);
+      // console.log(this.product);
       this.$store.commit("addToCart", this.product);
       Toast.fire({
         icon: "success",
