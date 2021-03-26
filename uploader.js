@@ -12,8 +12,11 @@ const data = require("./src/json/products.json");
 data &&
   Object.keys(data).forEach((key) => {
     const nestedContent = data[key];
-
+    nestedContent.title = nestedContent.name;
+    delete nestedContent.name;
+    
     if (typeof nestedContent === "object") {
+      
       Object.keys(nestedContent).forEach((docTitle) => {
         admin
           .firestore()

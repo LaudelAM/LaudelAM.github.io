@@ -48,10 +48,9 @@ export const addToCartDB = async () => {
       try {
         // console.log("saving to user cart");
         products = {Products: getProducts};
-        // console.log(getProducts);
+        
         cartUserRef.set(products);
         
-        // addAllProducts(products)
       } catch (e) {
         console.log(e);
       }
@@ -59,30 +58,36 @@ export const addToCartDB = async () => {
       // console.log("create user cart");
       products = {items: getProducts};
       cartUserRef.set(products);
-      // fetchDataFromDB();
     }
   }
 };
 
-// const addAllProducts = async (prodProd) => {
-//   console.log(prodProd[0].title);
-//   console.log(prodProd.length);
+export const fetchProducts = async (page, perPage, products) => {
+         try {
+           products = [];
+           let startAfter = perPage * (page - 1);
+           // let endAt = this.perPage * (page - 1) ;
+          //  this.getTotal();
+           console.log(page);
+           let result = db.collection("products").orderBy("id");
 
-//   for (let i = 0; i < prodProd.length; i++) {
-//     if (prodProd[i].id != 10) {
-//       db.collection("product")
-//         .doc(prodProd[i].title)
-//         .set({
-//           id: prodProd[i].id,
-//           title: prodProd[i].title,
-//           price: prodProd[i].price,
-//           category: prodProd[i].category,
-//           description: prodProd[i].description,
-//           image: prodProd[i].image,
-//         });
-//     }
-//   }
-// };
+           let prod = await result
+             .startAfter(startAfter)
+             .limit(perPage)
+             .get();
+
+           prod.docs.forEach((doc) => {
+             let prod = doc.data();
+             products.push(prod);
+           });
+
+           console.log(products);
+           return products;
+         } catch (e) {
+           console.log(e);
+         }
+       };
+
 
 export const updateStoreFromDB = async () => {
   let getUser = await store.getters.getUser;

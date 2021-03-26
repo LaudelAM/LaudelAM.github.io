@@ -21,32 +21,35 @@
       </b-nav-form>
 
       <!-- Populate products -->
-      <div class="row row-cols-lg-4 row-cols-md-4 row-cols-sm-2 row-cols-xs-2">
-        <div
-          id="my-products"
-          :items="paginateProducts"
-          :per-page="perPage"
-          :current-page="paginateProducts"
-          class="col mb-4"
-          style="border: none"
-          v-for="(paginateProduct, index) of paginateProducts"
-          :key="index"
-        >
-          <ProductDetail v-bind:product="paginateProduct" />
+      <div>
+        <div class="row row-cols-lg-4 row-cols-md-4 row-cols-sm-2 row-cols-xs-2">
+          <div
+            id="my-products"
+            :items="productsInDb"
+            :per-page="perPage"
+            :current-page="currentPage"
+            class="col mb-4"
+            style="border: none"
+            v-for="(productInDb, index) of productsInDb"
+            :key="index"
+          >
+            <ProductDetail v-bind:product="productInDb" />
+          </div>
         </div>
-      </div>
 
-      <b-pagination
-        v-model="currentPage"
-        align="center"
-        pills
-        :total-rows="total"
-        :per-page="perPage"
-        @input="fetchProducts"
-        aria-controls="my-products"
-      ></b-pagination>
-      <!-- <p>{{ getNew }}</p> -->
+        <b-pagination
+          v-model="currentPage"
+          align="center"
+          pills
+          :total-rows="total"
+          :per-page="perPage"
+          @input="paginate"
+          aria-controls="my-products"
+        ></b-pagination>
+      </div>
     </div>
+
+    <!-- </div> -->
   </div>
 </template>
 
@@ -55,7 +58,7 @@ import ProductDetail from "../components/ProductDetail.vue";
 // import axios from "axios";
 import { db } from "../database";
 // import products from "../stores/products";
-// import { fetchDataFromDB } from "../database";
+// import { fetchProducts } from "../database";
 // import products from "../stores/products";
 
 export default {
@@ -69,7 +72,6 @@ export default {
     return {
       products: [],
       searchInput: "",
-      paginatedProducts: [],
       currentPage: 1,
       perPage: 8,
       total: 0,
@@ -92,74 +94,58 @@ export default {
   },
 
   created() {
-    this.fetchProducts();
+    this.paginate(this.currentPage);
   },
 
   methods: {
-    // async fetchDataFromDB() {
-    //   try {
-    //     this.products = [];
-    //     let startAt = this.currentPage * this.perPage - this.perPage;
-    //     let endtAt = this.currentPage * this.perPage - this.perPage + this.perPage;
-
-    //     let result = await db.collection("productsNew").doc("data").get();
-    //     this.total = result.data().items.length;
-    //     this.pages = Math.ceil(this.total / this.perPage);
-
-    //     for (let i = startAt; i < endtAt; i++) {
-    //       let product = result.data().items[i];
-    //       if (product != null) this.products.push(product);
-    //     }
-    //     console.log(this.products);
-
-    //     return this.products;
-    //   } catch (e) {
-    //     console.log(e);
-    //   }
-    // },
-
-    async searchProducts() {
+    async paginate(page) {
       try {
-        this.paginatedProducts = [];
-        let result = await db.collection("productsNew").doc("data").get();
-        let product = result.data().items;
+        this.products = [];
+        let startAfter = this.perPage * (page - 1);
+        this.getTotal();
 
-        for (let i = 0; i < product.length; i++) {
-          if (
-            product[i].name.toLowerCase().match(this.searchInput.toLowerCase()) ||
-            product[i].category.toLowerCase().match(this.searchInput.toLowerCase())
-          ) {
-            let searchedProduct = product[i];
-            this.paginatedProducts.push(searchedProduct);
-          }
-        }
-        this.total = this.paginatedProducts.length;
-        console.log(this.total);
-        this.pages = Math.ceil(this.total / this.perPage);
+        let result = db.collection("products").orderBy("id");
+        let prod = await result.startAfter(startAfter).limit(this.perPage).get();
 
-        return this.paginatedProducts;
+        prod.docs.forEach((doc) => {
+          let prod = doc.data();
+          this.products.push(prod);
+        });
+
+        // console.log(this.products);
+        return this.products;
       } catch (e) {
         console.log(e);
       }
     },
 
-    async fetchProducts() {
-      try {
-        this.paginatedProducts = [];
-        let startAt = this.currentPage * this.perPage - this.perPage;
-        let endtAt = this.currentPage * this.perPage - this.perPage + this.perPage;
+    getTotal() {
+      db.collection("products")
+        .get()
+        .then((res) => {
+          this.total = res.size;
+          this.pages = Math.ceil(this.total / this.perPage);
+        });
+    },
 
-        let result = await db.collection("productsNew").doc("data").get();
-        let product = result.data().items;
-        this.total = product.length;
+    async searchProducts() {
+      try {
+        this.products = [];
+        let result = await db.collection("products").orderBy("id").get();
+
+        result.docs.forEach((doc) => {
+          let product = doc.data();
+          if (
+            product.title.toLowerCase().match(this.searchInput.toLowerCase()) ||
+            product.category.toLowerCase().match(this.searchInput.toLowerCase())
+          )
+            this.products.push(product);
+        });
+        this.total = this.products.length;
         this.pages = Math.ceil(this.total / this.perPage);
 
-        for (let i = startAt; i < endtAt; i++) {
-          if (product[i] != null) this.paginatedProducts.push(product[i]);
-        }
-
-        // console.log(this.paginatedProducts);
-        return this.paginatedProducts;
+        console.log(this.products);
+        return this.products;
       } catch (e) {
         console.log(e);
       }

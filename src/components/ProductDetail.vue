@@ -2,14 +2,14 @@
   <!--  -->
   <div class="card h-100">
     <div class="image hover-overlay ripple">
-      <img :src="product.url" class="card-img-thumbnail img-responsive" alt="..." />
+      <img :src="product.image" class="card-img-thumbnail img-responsive" alt="..." />
     </div>
 
     <div class="card-body">
-      <h5 class="card-title">{{ product.name }}</h5>
+      <h5 class="card-title">{{ product.title }}</h5>
     </div>
     <ul class="list-group list-group-flush">
-      <li class="list-group-item text-center">{{ product.description }}</li>
+      <li class="list-group-item text-center text-truncate">{{ product.description }}</li>
       <li class="list-group-item text-center">{{ product.category }}</li>
       <li class="list-group-item text-left">
         R{{ product.price }}
