@@ -13,7 +13,7 @@
         <b-button
           size="sm"
           class="my-2 my-sm-0"
-          v-on:click="searchProducts"
+          v-on:click="paginate(currentPage)"
           type="submit"
         >
           <b-icon icon="search" aria-label="Help">Search</b-icon></b-button
@@ -71,7 +71,8 @@ export default {
   data() {
     return {
       products: [],
-      searchInput: "",
+      searchedPRoducts: [],
+      searchInput: null,
       currentPage: 1,
       perPage: 8,
       total: 0,
@@ -87,10 +88,6 @@ export default {
     productsInDb() {
       return this.products;
     },
-
-    paginateProducts() {
-      return this.paginatedProducts;
-    },
   },
 
   created() {
@@ -99,23 +96,30 @@ export default {
 
   methods: {
     async paginate(page) {
-      try {
-        this.products = [];
-        let startAfter = this.perPage * (page - 1);
-        this.getTotal();
+      this.products = [];
+      if (this.searchInput == null) {
+        try {
+          let startAfter = this.perPage * (page - 1);
+          this.getTotal();
 
-        let result = db.collection("products").orderBy("id");
-        let prod = await result.startAfter(startAfter).limit(this.perPage).get();
+          let result = db.collection("products").orderBy("id");
+          let prod = await result.startAfter(startAfter).limit(this.perPage).get();
 
-        prod.docs.forEach((doc) => {
-          let prod = doc.data();
-          this.products.push(prod);
-        });
+          prod.docs.forEach((doc) => {
+            let prod = doc.data();
+            this.products.push(prod);
+          });
 
-        // console.log(this.products);
-        return this.products;
-      } catch (e) {
-        console.log(e);
+          return this.products;
+        } catch (e) {
+          console.log(e);
+        }
+      } else {
+        try {
+          this.searchProducts(page);
+        } catch (e) {
+          console.log(e);
+        }
       }
     },
 
@@ -128,9 +132,12 @@ export default {
         });
     },
 
-    async searchProducts() {
+    async searchProducts(page) {
       try {
-        this.products = [];
+        let products = [];
+        let startAt = this.perPage * (page - 1);
+        let endAt = startAt + this.perPage;
+
         let result = await db.collection("products").orderBy("id").get();
 
         result.docs.forEach((doc) => {
@@ -139,10 +146,13 @@ export default {
             product.title.toLowerCase().match(this.searchInput.toLowerCase()) ||
             product.category.toLowerCase().match(this.searchInput.toLowerCase())
           )
-            this.products.push(product);
+            products.push(product);
         });
-        this.total = this.products.length;
+
+        this.total = products.length;
         this.pages = Math.ceil(this.total / this.perPage);
+
+        this.products = products.slice(startAt, endAt);
 
         console.log(this.products);
         return this.products;
