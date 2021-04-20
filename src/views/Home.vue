@@ -4,7 +4,7 @@
     <p v-if="userLoggedIn == true">Welcome {{ getUser.name }}</p>
     <!-- -->
     <div>
-      <b-carousel
+      <!-- <b-carousel
         id="carousel-fade"
         style="text-shadow: 0px 0px 2px #000"
         fade
@@ -19,7 +19,7 @@
           :text="getAllProduct.description"
           :img-src="getAllProduct.image"
         ></b-carousel-slide>
-      </b-carousel>
+      </b-carousel> -->
       <!-- <p>{{ getAllProducts }}</p> -->
     </div>
   </div>

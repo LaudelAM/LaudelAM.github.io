@@ -1,6 +1,8 @@
 <template>
   <!--  -->
   <div class="card h-100">
+    <!--  -->
+    <!--  -->
     <div class="image hover-overlay ripple">
       <img :src="product.image" class="card-img-thumbnail img-responsive" alt="..." />
     </div>

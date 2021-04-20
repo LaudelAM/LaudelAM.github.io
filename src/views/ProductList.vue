@@ -1,24 +1,49 @@
 <template>
   <!--  -->
-  <div class="d-flex flex-row no-gutters justify-content-center p-2">
-    <div class="col-10">
-      <!-- Search input -->
-      <b-nav-form class="col-md-6 mr-auto">
-        <b-form-input
-          size="md"
-          class="mr-sm-6"
-          v-model="searchInput"
-          placeholder="Name, Category"
-        ></b-form-input>
-        <b-button
-          size="sm"
-          class="my-2 my-sm-0"
-          v-on:click="paginate(currentPage)"
-          type="submit"
-        >
-          <b-icon icon="search" aria-label="Help">Search</b-icon></b-button
-        >
-      </b-nav-form>
+  <div class="d-flex justify-content-center p-2">
+    <!-- <div class="col-2 justify-content-center mt-5">
+      <p>Some content here</p>
+    </div> -->
+    <div class="col-10 justify-content-center">
+      <div class="d-flex flex-row no-gutters">
+        <!-- Search input -->
+        <form class="form-inline col-4">
+          <input
+            class="form-control mr-sm"
+            type="search"
+            placeholder="Keyword search"
+            v-model="searchInput"
+            aria-label="Search"
+          />
+          <button
+            class="btn btn-light my-sm-0"
+            v-on:click="fetchProducts(currentPage)"
+            type="submit"
+          >
+            <b-icon icon="search" aria-label="Help">Search</b-icon>
+          </button>
+        </form>
+        <!-- Sorting -->
+        <div class="input-group col-md-4 ml-auto">
+          <div class="input-group">
+            <select
+              class="custom-select"
+              @change="fetchProducts(currentPage)"
+              id="inputGroupSelect"
+            >
+              <option selected>Choose...</option>
+              <option value="1">Title</option>
+              <option value="2">Category</option>
+              <option value="3">Price: low to high</option>
+              <option value="4">Price: high to low</option>
+            </select>
+            <div class="input-group-append">
+              <label class="input-group-text" for="inputGroupSelect">Sort By</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--  -->
 
       <!-- Populate products -->
       <div>
@@ -43,7 +68,7 @@
           pills
           :total-rows="total"
           :per-page="perPage"
-          @input="paginate"
+          @input="fetchProducts"
           aria-controls="my-products"
         ></b-pagination>
       </div>
@@ -57,9 +82,8 @@
 import ProductDetail from "../components/ProductDetail.vue";
 // import axios from "axios";
 import { db } from "../database";
-// import products from "../stores/products";
-// import { fetchProducts } from "../database";
-// import products from "../stores/products";
+// import algoliasearch from "algoliasearch/lite";
+import "instantsearch.css/themes/satellite-min.css";
 
 export default {
   components: {
@@ -71,8 +95,7 @@ export default {
   data() {
     return {
       products: [],
-      searchedPRoducts: [],
-      searchInput: null,
+      searchInput: "",
       currentPage: 1,
       perPage: 8,
       total: 0,
@@ -91,74 +114,72 @@ export default {
   },
 
   created() {
-    this.paginate(this.currentPage);
+    this.fetchProducts(this.currentPage);
   },
 
   methods: {
-    async paginate(page) {
-      this.products = [];
-      if (this.searchInput == null) {
-        try {
-          let startAfter = this.perPage * (page - 1);
-          this.getTotal();
-
-          let result = db.collection("products").orderBy("id");
-          let prod = await result.startAfter(startAfter).limit(this.perPage).get();
-
-          prod.docs.forEach((doc) => {
-            let prod = doc.data();
-            this.products.push(prod);
-          });
-
-          return this.products;
-        } catch (e) {
-          console.log(e);
-        }
-      } else {
-        try {
-          this.searchProducts(page);
-        } catch (e) {
-          console.log(e);
-        }
-      }
-    },
-
-    getTotal() {
-      db.collection("products")
-        .get()
-        .then((res) => {
-          this.total = res.size;
-          this.pages = Math.ceil(this.total / this.perPage);
-        });
-    },
-
-    async searchProducts(page) {
+    async fetchProducts(page) {
       try {
-        let products = [];
+        this.products = [];
+        let productsRef = db.collection("products");
+
+        // if (document.getElementById("inputGroupSelect").innerHTML == 0) {
         let startAt = this.perPage * (page - 1);
         let endAt = startAt + this.perPage;
+        let input = this.capitalizeFirstLetter(this.searchInput);
 
-        let result = await db.collection("products").orderBy("id").get();
+        let query = await productsRef
+          .where("title", ">=", input)
+          .where("title", "<=", input + "\uf8ff")
+          .get();
 
-        result.docs.forEach((doc) => {
+        // this.processQuery(page, query, this.products);
+
+        query.docs.forEach((doc) => {
           let product = doc.data();
-          if (
-            product.title.toLowerCase().match(this.searchInput.toLowerCase()) ||
-            product.category.toLowerCase().match(this.searchInput.toLowerCase())
-          )
-            products.push(product);
+          this.products.push(product);
+          // this.$store.commit("setProductsList", product);
         });
 
-        this.total = products.length;
+        this.total = this.products.length;
         this.pages = Math.ceil(this.total / this.perPage);
 
-        this.products = products.slice(startAt, endAt);
+        if (document.getElementById("inputGroupSelect").value == 1) {
+          this.products = this.products.sort((a, b) => (a.title > b.title ? 1 : -1));
+          this.products = this.products.slice(startAt, endAt);
 
-        console.log(this.products);
-        return this.products;
+          return this.products;
+        } else if (document.getElementById("inputGroupSelect").value == 2) {
+          this.products = this.products.sort((a, b) =>
+            a.category > b.category ? 1 : -1
+          );
+          this.products = this.products.slice(startAt, endAt);
+
+          return this.products;
+        } else if (document.getElementById("inputGroupSelect").value == 3) {
+          this.products = this.products.sort((a, b) => (a.price > b.price ? 1 : -1));
+          this.products = this.products.slice(startAt, endAt);
+
+          return this.products;
+        } else if (document.getElementById("inputGroupSelect").value == 4) {
+          this.products = this.products
+            .sort((a, b) => (a.price > b.price ? 1 : -1))
+            .reverse();
+          this.products = this.products.slice(startAt, endAt);
+
+          return this.products;
+        } else {
+          this.products = this.products.slice(startAt, endAt);
+
+          return this.products;
+        }
       } catch (e) {
         console.log(e);
       }
+    },
+
+    capitalizeFirstLetter(str) {
+      return str.charAt(0).toUpperCase() + str.slice(1);
     },
   },
 };

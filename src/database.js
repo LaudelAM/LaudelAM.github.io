@@ -14,9 +14,6 @@ const firebaseConfig = {
   measurementId: "G-4R2BGE8S20",
 };
 
-// const firestoreService = require("firestore-export-import");
-// const serviceAccount = require("./serviceAccount.json");
-
 // Get a Firestore instance
 export const db = firebase.initializeApp(firebaseConfig).firestore();
 
@@ -34,7 +31,6 @@ const getProducts = store.getters.productsInCart;
 // const prodProd = store.getters.allProducts;
 
 //Products operations in DB
-
 //Adding to Cart collection
 export const addToCartDB = async () => {
   if (isLoggedIn == true) {
@@ -61,33 +57,6 @@ export const addToCartDB = async () => {
     }
   }
 };
-
-export const fetchProducts = async (page, perPage, products) => {
-         try {
-           products = [];
-           let startAfter = perPage * (page - 1);
-           // let endAt = this.perPage * (page - 1) ;
-          //  this.getTotal();
-           console.log(page);
-           let result = db.collection("products").orderBy("id");
-
-           let prod = await result
-             .startAfter(startAfter)
-             .limit(perPage)
-             .get();
-
-           prod.docs.forEach((doc) => {
-             let prod = doc.data();
-             products.push(prod);
-           });
-
-           console.log(products);
-           return products;
-         } catch (e) {
-           console.log(e);
-         }
-       };
-
 
 export const updateStoreFromDB = async () => {
   let getUser = await store.getters.getUser;

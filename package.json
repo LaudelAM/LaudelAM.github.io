@@ -9,26 +9,33 @@
     "deploy": "sh deploy.sh"
   },
   "dependencies": {
+    "algoliasearch": "^4.8.6",
     "axios": "^0.21.1",
     "bootstrap": "^4.5.3",
     "bootstrap-vue": "^2.21.1",
     "core-js": "^3.6.5",
+    "dotenv": "^8.2.0",
     "es6-promise": "^4.2.8",
-    "firebase": "^8.2.6",
-    "firebase-admin": "^9.5.0",
+    "express": "^4.17.1",
+    "firebase": "^8.4.1",
+    "firebase-functions": "^3.13.2",
     "firestore-export-import": "^0.13.0",
+    "instantsearch.css": "^7.4.5",
     "jw-vue-pagination": "^1.0.3",
     "node": "^15.10.0",
     "sweetalert2": "^10.14.0",
     "vue": "^2.6.12",
     "vue-axios": "^3.2.0",
-    "vue-router": "^3.4.9",
+    "vue-instantsearch": "^3.6.0",
+    "vue-router": "^3.5.1",
+    "vue-server-renderer": "^2.6.12",
     "vue-sweetalert2": "^4.2.0",
     "vuefire": "^2.2.5",
     "vuelidate": "^0.7.6",
     "vuex": "^3.6.0",
     "vuex-persistedstate": "^4.0.0-beta.3",
-    "vuexfire": "^3.2.5"
+    "vuexfire": "^3.2.5",
+    "webpack-merge": "^5.7.3"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",
@@ -57,5 +64,17 @@
     "> 1%",
     "last 2 versions",
     "not dead"
-  ]
+  ],
+  "description": "## Project setup ``` npm install ```",
+  "main": "babel.config.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LaudelAM/LaudelAM.github.io.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/LaudelAM/LaudelAM.github.io/issues"
+  },
+  "homepage": "https://github.com/LaudelAM/LaudelAM.github.io#readme"
 }

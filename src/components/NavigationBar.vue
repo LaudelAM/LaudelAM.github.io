@@ -45,7 +45,7 @@
           <b-nav-item-dropdown right>
             <!-- Using 'button-content' slot -->
             <template class="text-light" #button-content>
-              <em>{{ getUser.name }}</em>
+              <em>Hi, {{ getUser.name }}</em>
             </template>
             <b-dropdown-item>
               <router-link class="text-dark" to="/userProfile">Profile</router-link>
