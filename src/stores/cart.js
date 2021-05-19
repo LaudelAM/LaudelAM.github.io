@@ -28,7 +28,7 @@ export default {
     },
 
     addToCart(state, product) {
-      // console.log("Search existing product in store");
+      // console.log("Search existing product in store");\
       let findProduct = state.products.find((data) => data.id === product.id);
 
       if (!findProduct) {
@@ -38,7 +38,15 @@ export default {
         findProduct.quantity += 1;
       }
       // console.log("end search in store");
+      addToCartDB();
+    },
 
+    incrementProductQuantity(state, product) {
+      let findProduct = state.products.find((data) => data.id === product.id);
+
+      if(findProduct){
+        findProduct.quantity += 1;
+      }
       addToCartDB();
     },
 
@@ -46,14 +54,20 @@ export default {
       // console.log("Search existing product in store");
       let findProduct = state.products.find((data) => data.id === product.id);
 
-      if (findProduct && findProduct.quantity > 1) {
-        findProduct.quantity = findProduct.quantity - 1;
-      } else if (findProduct.quantity == 1) {
+      if (findProduct) {
         state.products.splice(state.products.indexOf(findProduct), 1);
       }
       // console.log("End search in store");
-      // state.products = []
       removeFromCartDB();
     },
+
+    decrementProductQuantity(state, product) {
+      let findProduct = state.products.find((data) => data.id === product.id);
+
+      if (findProduct && findProduct.quantity > 1) {
+        findProduct.quantity = findProduct.quantity - 1;
+      }
+      removeFromCartDB();
+    }
   },
 };

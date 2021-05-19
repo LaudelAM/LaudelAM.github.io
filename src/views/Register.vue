@@ -2,11 +2,6 @@
   <div class="d-flex flex-column align-items-center justify-content-center">
     <div class="card mb-3 p-4 w-50" style="border: none">
       <h5 class="card-header text-center">Sign up</h5>
-      <img
-        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTTxYGdcuCvhkHUPzFkrnC-Emi7gWvIjOUUgQ&usqp=CAU"
-        class="card-img-thumbnail align-self-center rounded mb-2"
-        alt="Profile picture"
-      />
       <!--  -->
       <form>
         <div class="form-row">
@@ -14,9 +9,9 @@
             <label for="inputFirstname" class="text-capitalize">Firstname</label>
             <input
               type="firstname"
-              class="form-control text-capitalize"
+              class="form-control"
+              style="text-transform: capitalize"
               v-model="input.firstname"
-              pattern="[^\d]+"
               id="inputFirstname"
               placeholder="Firstname"
             />
@@ -55,9 +50,16 @@
             />
           </div>
         </div>
-        <button id="btn-signup" type="button" class="btn btn-success" v-on:click="submit">
-          <i class="icon-hand-right"></i> Sign Up
-        </button>
+        <div class="text-center">
+          <button
+            id="btn-signup"
+            type="button"
+            class="btn btn-success"
+            v-on:click="submit"
+          >
+            Sign Up
+          </button>
+        </div>
       </form>
     </div>
     <!-- -->

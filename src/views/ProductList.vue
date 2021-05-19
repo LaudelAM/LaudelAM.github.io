@@ -1,8 +1,22 @@
 <template>
   <!--  -->
   <div class="d-flex justify-content-center p-2">
-    <!-- <div class="col-2 justify-content-center mt-5">
-      <p>Some content here</p>
+    <!-- Side navigation -->
+    <!-- <div class="col-2">
+      <nav class="sidenav">
+        <ul class="main-buttons">
+          <li>
+            <i class="fa fa-circle fa-2x"></i>
+            Category
+            <ul class="hidden">
+              <li>TK-421</li>
+              <li>why aren't</li>
+              <li>you at</li>
+              <li>your post?</li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
     </div> -->
     <div class="col-10 justify-content-center">
       <div class="d-flex flex-row no-gutters">
@@ -11,35 +25,33 @@
           <input
             class="form-control mr-sm"
             type="search"
-            placeholder="Keyword search"
+            placeholder="Search Keyword "
             v-model="searchInput"
             aria-label="Search"
           />
           <button
             class="btn btn-light my-sm-0"
-            v-on:click="fetchProducts(currentPage)"
+            v-on:click="processOperation()"
             type="submit"
           >
             <b-icon icon="search" aria-label="Help">Search</b-icon>
           </button>
         </form>
         <!-- Sorting -->
-        <div class="input-group col-md-4 ml-auto">
+        <div class="input-group col-xs-1 col-md-3 col-3 ml-auto">
           <div class="input-group">
             <select
               class="custom-select"
-              @change="fetchProducts(currentPage)"
-              id="inputGroupSelect"
+              @change="processOperation()"
+              ref="inputGroupSelect"
             >
-              <option selected>Choose...</option>
-              <option value="1">Title</option>
-              <option value="2">Category</option>
-              <option value="3">Price: low to high</option>
-              <option value="4">Price: high to low</option>
+              <option selected>Sort By...</option>
+              <option value="1">Price: low to high</option>
+              <option value="2">Price: high to low</option>
             </select>
-            <div class="input-group-append">
+            <!-- <div class="input-group-append">
               <label class="input-group-text" for="inputGroupSelect">Sort By</label>
-            </div>
+            </div> -->
           </div>
         </div>
       </div>
@@ -47,42 +59,54 @@
 
       <!-- Populate products -->
       <div>
-        <div class="row row-cols-lg-4 row-cols-md-4 row-cols-sm-2 row-cols-xs-2">
+        <div class="row row-cols-md-4 row-cols-lg-4">
           <div
             id="my-products"
-            :items="productsInDb"
+            :items="getDbProducts"
             :per-page="perPage"
             :current-page="currentPage"
-            class="col mb-4"
-            style="border: none"
-            v-for="(productInDb, index) of productsInDb"
+            class="col-xs col-sm col-md col mb-4"
+            v-for="(getDbProduct, index) of getDbProducts"
             :key="index"
           >
-            <ProductDetail v-bind:product="productInDb" />
+            <ProductDetail v-bind:product="getDbProduct" />
           </div>
         </div>
 
-        <b-pagination
+        <ul class="pagination justify-content-center">
+          <li class="page-item">
+            <a
+              class="page-link"
+              href="#"
+              tabindex="-1"
+              v-on:click="previousPage()"
+              aria-disabled="true"
+              >Previous</a
+            >
+          </li>
+          <li class="page-item">
+            <a class="page-link" v-on:click="processOperation()" href="#">Next</a>
+          </li>
+        </ul>
+
+        <!-- <b-pagination
           v-model="currentPage"
           align="center"
           pills
-          :total-rows="total"
           :per-page="perPage"
-          @input="fetchProducts"
+          prev-text="Prev"
+          next-text="Next"
+          @input="processOperation"
           aria-controls="my-products"
-        ></b-pagination>
+        ></b-pagination> -->
       </div>
     </div>
-
-    <!-- </div> -->
   </div>
 </template>
 
 <script>
 import ProductDetail from "../components/ProductDetail.vue";
-// import axios from "axios";
 import { db } from "../database";
-// import algoliasearch from "algoliasearch/lite";
 import "instantsearch.css/themes/satellite-min.css";
 
 export default {
@@ -99,88 +123,110 @@ export default {
       currentPage: 1,
       perPage: 8,
       total: 0,
-      pages: 0,
+      lastItem: null,
+      firstItem: null,
     };
   },
 
   computed: {
-    getProducts() {
+    getStoreProducts() {
       return this.$store.getters.allProducts;
     },
 
-    productsInDb() {
-      return this.products;
+    getDbProducts() {
+      let productsData = [];
+      this.products.forEach((doc) => {
+        let product = doc.data();
+        productsData.push(product);
+      });
+      return productsData;
     },
-  },
-
-  created() {
-    this.fetchProducts(this.currentPage);
   },
 
   methods: {
-    async fetchProducts(page) {
+    async fetchProducts(searchKeyword, productsPerPage, lastItem) {
+      let products = [];
       try {
-        this.products = [];
-        let productsRef = db.collection("products");
+        let productsCollection = db.collection("products");
+        searchKeyword = searchKeyword.charAt(0).toUpperCase() + searchKeyword.slice(1);
+        // let optionChoice = this.$refs.inputGroupSelect.value;
 
-        // if (document.getElementById("inputGroupSelect").innerHTML == 0) {
-        let startAt = this.perPage * (page - 1);
-        let endAt = startAt + this.perPage;
-        let input = this.capitalizeFirstLetter(this.searchInput);
-
-        let query = await productsRef
-          .where("title", ">=", input)
-          .where("title", "<=", input + "\uf8ff")
-          .get();
-
-        // this.processQuery(page, query, this.products);
-
-        query.docs.forEach((doc) => {
-          let product = doc.data();
-          this.products.push(product);
-          // this.$store.commit("setProductsList", product);
-        });
-
-        this.total = this.products.length;
-        this.pages = Math.ceil(this.total / this.perPage);
-
-        if (document.getElementById("inputGroupSelect").value == 1) {
-          this.products = this.products.sort((a, b) => (a.title > b.title ? 1 : -1));
-          this.products = this.products.slice(startAt, endAt);
-
-          return this.products;
-        } else if (document.getElementById("inputGroupSelect").value == 2) {
-          this.products = this.products.sort((a, b) =>
-            a.category > b.category ? 1 : -1
+        if (searchKeyword && searchKeyword.length > 0) {
+          productsCollection = productsCollection.where("title", ">=", searchKeyword);
+          productsCollection = productsCollection.where(
+            "title",
+            "<=",
+            searchKeyword + "\uf8ff"
           );
-          this.products = this.products.slice(startAt, endAt);
-
-          return this.products;
-        } else if (document.getElementById("inputGroupSelect").value == 3) {
-          this.products = this.products.sort((a, b) => (a.price > b.price ? 1 : -1));
-          this.products = this.products.slice(startAt, endAt);
-
-          return this.products;
-        } else if (document.getElementById("inputGroupSelect").value == 4) {
-          this.products = this.products
-            .sort((a, b) => (a.price > b.price ? 1 : -1))
-            .reverse();
-          this.products = this.products.slice(startAt, endAt);
-
-          return this.products;
-        } else {
-          this.products = this.products.slice(startAt, endAt);
-
-          return this.products;
         }
+
+        productsCollection = productsCollection.orderBy("title", "asc");
+        productsCollection = productsCollection.limit(productsPerPage);
+        if (lastItem) productsCollection = productsCollection.startAfter(lastItem);
+
+        let results = await productsCollection.get();
+
+        products = results.docs;
+
+        // this.getCategory()
       } catch (e) {
         console.log(e);
       }
+      return products;
     },
 
-    capitalizeFirstLetter(str) {
-      return str.charAt(0).toUpperCase() + str.slice(1);
+    async processOperation() {
+      // this.products = [];
+      this.products = await this.fetchProducts(
+        this.searchInput,
+        this.perPage,
+        this.lastItem
+      );
+
+      this.firstItem = this.products[this.products.length - this.perPage];
+      this.lastItem = this.products[this.products.length - 1];
     },
+
+    async previousPage() {
+      let products = [];
+      try {
+        let productsCollection = db.collection("products");
+        let searchKeyword = this.searchInput;
+        searchKeyword = searchKeyword.charAt(0).toUpperCase() + searchKeyword.slice(1);
+        // let optionChoice = this.$refs.inputGroupSelect.value;
+
+        if (searchKeyword && searchKeyword.length > 0) {
+          productsCollection = productsCollection.where("title", ">=", searchKeyword);
+          productsCollection = productsCollection.where(
+            "title",
+            "<=",
+            searchKeyword + "\uf8ff"
+          );
+        }
+
+        productsCollection = productsCollection.orderBy("title", "asc");
+        productsCollection = productsCollection.limitToLast(this.perPage);
+
+        if (this.firstItem)
+          productsCollection = productsCollection.endBefore(this.firstItem);
+
+        let results = await productsCollection.get();
+        // console.log("after", productsPerPage);
+
+        products = results.docs;
+
+        this.lastItem = products[products.length - 1];
+        this.firstItem = products[products.length - this.perPage];
+        // this.getCategory()
+      } catch (e) {
+        console.log(e);
+      }
+      return (this.products = products);
+    },
+  },
+
+  async mounted() {
+    this.processOperation();
   },
 };
 </script>

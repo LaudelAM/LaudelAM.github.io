@@ -7,6 +7,7 @@ import {router} from "./router";
 import {store} from "./stores";
 import {db} from "./database";
 import "firebase/auth";
+// import {app} from "./database";
 
 // Import the styles directly. (Or you could add them via script tags.)
 import 'bootstrap/dist/css/bootstrap.css';
@@ -18,12 +19,12 @@ Vue.use(BootstrapVue);
 Vue.use(BootstrapVueIcons);
 Vue.use(VueSweetalert2);
 
-
 Vue.config.productionTip = false
 
 new Vue({
   router,
   store,
   db,
+  // app,
   render: (h) => h(App),
 }).$mount("#app");

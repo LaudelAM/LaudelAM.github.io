@@ -1,6 +1,8 @@
 import firebase from "firebase/app";
 import "firebase/firestore";
 import {store} from "./stores";
+// import * as admin from 'firebase-admin';
+
 // import authentication from "./stores/authentication"
 
 const firebaseConfig = {
@@ -13,6 +15,8 @@ const firebaseConfig = {
   appId: "1:905723884752:web:572a0ff9828b7be9cd1ad5",
   measurementId: "G-4R2BGE8S20",
 };
+
+// export const app = admin.initializeApp();
 
 // Get a Firestore instance
 export const db = firebase.initializeApp(firebaseConfig).firestore();
@@ -69,8 +73,8 @@ export const updateStoreFromDB = async () => {
 
       if (products.length > 0) {
         store.commit("cartProductsList", products);
-        let pro = store.getters.productsInCart;
-        console.log(pro);
+        // let pro = store.getters.productsInCart;
+        // console.log(pro);
       } else if (products.length == 0 && getProducts.length != 0) {
         let productInCart = {Products: getProducts};
         cartUserRef.set(productInCart);
@@ -84,14 +88,14 @@ export const updateStoreFromDB = async () => {
 //Removing from Cart collection
 export const removeFromCartDB = async () => {
   if (isLoggedIn == true) {
-    console.log("start checking in DB");
+    // console.log("start checking in DB");
     let cartUserRef = db.collection("carts").doc(getUser.email);
     let doc = await cartUserRef.get();
 
     try {
       if (doc.exists) {
         // Update products in user cart
-        console.log("Update user cart");
+        // console.log("Update user cart");
         let products = {Products: getProducts};
 
         cartUserRef.set(products);

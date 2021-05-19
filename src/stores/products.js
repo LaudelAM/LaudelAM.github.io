@@ -1,21 +1,21 @@
-// import {db} from "../database";
-
 export default {
   state: () => ({
-    products: [],
+    productsStore: []
   }),
+
   mutations: {
     setProductsList(state, product) {
-      state.products = product;
-      // console.log(product.id);
+        let findProduct = state.productsStore.find(
+          (data) => data.id === product.id
+        );
+        if(!findProduct)
+      state.productsStore.push(product);
     },
   },
 
-  actions: {},
-
   getters: {
     allProducts(state) {
-      return state.products;
+      return state.productsStore;
     },
   },
 };

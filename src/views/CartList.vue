@@ -1,19 +1,19 @@
 <template>
-  <div class="row no-gutters justify-content-center">
-    <div class="col-9 pr-2 justify-content-center">
-      <div class="row no-gutters row-cols-md-2 row-cols-sm-2">
-        <div
-          class="col mb-2"
-          style="border: none"
-          v-for="(getProductInCart, index) of getProductsInCart"
-          :key="index"
-        >
-          <CartItem v-bind:product="getProductInCart" />
-        </div>
+  <div class="d-flex justify-content-center p-2">
+    <div class="col-9 justify-content-center">
+      <!-- <div class="row no-gutters row-cols-md-2 row-cols-sm"> -->
+      <div
+        class="col-md col-sm"
+        style="border: none"
+        v-for="(getProductInCart, index) of getProductsInCart"
+        :key="index"
+      >
+        <CartItem v-bind:product="getProductInCart" />
       </div>
+      <!-- </div> -->
     </div>
     <!--  -->
-    <div class="col-3 p-3">
+    <div class="col-md-3 col-sm p-3">
       <div class="card">
         <ul class="list-group list-group-flush">
           <li class="list-group-item" style="border: none">
@@ -88,8 +88,6 @@ export default {
       let total = this.subtotal + (this.subtotal * 14) / 100;
       return this.roundToTwo(total);
     },
-
-    // displayProductsInUserCart() {},
   },
 
   methods: {
