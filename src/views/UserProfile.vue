@@ -124,6 +124,10 @@ export default {
     },
   },
 
+  created() {
+    this.orders();
+  },
+
   methods: {
     async fetchUserProfile() {
       let userRef = db.collection("users").doc(this.getUser.email);
@@ -131,6 +135,19 @@ export default {
 
       if (doc.exists) {
         this.input = doc.data();
+      }
+    },
+
+    async orders() {
+      let ordersCollection = await db.collection("orders").doc(this.getUser.email);
+      let doc = await ordersCollection.get();
+      // let orders = null;
+
+      if (doc.exists) {
+        let order = doc.data().Orders;
+        let orderL = order[order.length - 1].productsPerOrder;
+        console.log("order", order);
+        console.log("order legnth", orderL);
       }
     },
 

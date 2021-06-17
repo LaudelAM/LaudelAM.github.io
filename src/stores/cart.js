@@ -37,6 +37,11 @@ export default {
       // console.log(product.id);
     },
 
+    clearCart(state){
+      state.products = []
+      removeFromCartDB();
+    },
+
     addToCart(state, product) {
       // console.log("Search existing product in store");\
       let findProduct = state.products.find((data) => data.id === product.id);

@@ -28,10 +28,6 @@
             Total
             <span class="badge badge-light float-right">R{{ getTotal }}</span>
           </li>
-          <!-- <li class="list-group-item" style="border: none">
-            Order
-            <span class="badge badge-light float-right">{{ newOrder.orderNumber }}</span>
-          </li> -->
         </ul>
       </div>
 
@@ -89,6 +85,7 @@ const Toast = Swal.mixin({
     toast.addEventListener("mouseleave", Swal.resumeTimer);
   },
 });
+
 export default {
   components: {
     CartItem,
@@ -107,8 +104,7 @@ export default {
 
   computed: {
     getProductsInCart() {
-      let products = this.$store.getters.productsInCart;
-      return products;
+      return this.$store.getters.productsInCart;
     },
 
     userLoggedIn() {
@@ -153,6 +149,7 @@ export default {
         });
       }
     },
+
     //Generate order number
     getOrderNumber(orderNumber) {
       let number = Date.now().toString();
@@ -196,7 +193,7 @@ export default {
       };
 
       let signature = generateMD5(data);
-      console.log("Signature:", signature);
+      // console.log("Signature:", signature);
 
       return signature;
     },
