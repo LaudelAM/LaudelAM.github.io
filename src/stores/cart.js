@@ -11,13 +11,23 @@ export default {
       return state.products;
     },
 
-    subtotalCalculation(state) {
+    subtotal(state) {
       let subtotal = state.products.reduce(
         (accumulator, current) =>
           accumulator + current.price * current.quantity,
         0
       );
       return subtotal;
+    },
+
+    total(state){
+      let subtotal = state.products.reduce(
+        (accumulator, current) =>
+          accumulator + current.price * current.quantity,
+        0
+      );
+      let total = subtotal + (subtotal * 14) / 100;
+      return total
     },
   },
 

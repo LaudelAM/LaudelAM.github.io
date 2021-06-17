@@ -2,22 +2,35 @@
   <!--  -->
   <div class="d-flex justify-content-center p-2">
     <!-- Side navigation -->
-    <!-- <div class="col-2">
+    <div class="d-block-flex col-2">
       <nav class="sidenav">
-        <ul class="main-buttons">
-          <li>
-            <i class="fa fa-circle fa-2x"></i>
-            Category
-            <ul class="hidden">
-              <li>TK-421</li>
-              <li>why aren't</li>
-              <li>you at</li>
-              <li>your post?</li>
-            </ul>
+        <b-button-group vertical>
+          <b-dropdown class="pt-8" right split text="Categories" variant="light">
+            <b-dropdown-item
+              style="text-transform: capitalize"
+              v-for="(category, index) of categories"
+              :key="index"
+              ref="buttonGroupSelect"
+              >{{ category }}</b-dropdown-item
+            >
+          </b-dropdown>
+        </b-button-group>
+        <!-- <ul class="nav nav-tabs mt-5">
+          <li class="nav-item dropdown">
+            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown"
+              >Categories</a
+            >
+            <div
+              class="dropdown-menu"
+              v-for="(category, index) of categories"
+              :key="index"
+            >
+              <a href="#" class="dropdown-item text-link">{{ category }}</a>
+            </div>
           </li>
-        </ul>
+        </ul> -->
       </nav>
-    </div> -->
+    </div>
     <div class="col-10 justify-content-center">
       <div class="d-flex flex-row no-gutters">
         <!-- Search input -->
@@ -38,7 +51,7 @@
           </button>
         </form>
         <!-- Sorting -->
-        <div class="input-group col-xs-1 col-md-3 col-3 ml-auto">
+        <div class="input-group col-xs col-md-3 col-3 ml-auto">
           <div class="input-group">
             <select
               class="custom-select"
@@ -49,14 +62,10 @@
               <option value="1">Price: low to high</option>
               <option value="2">Price: high to low</option>
             </select>
-            <!-- <div class="input-group-append">
-              <label class="input-group-text" for="inputGroupSelect">Sort By</label>
-            </div> -->
           </div>
         </div>
       </div>
       <!--  -->
-
       <!-- Populate products -->
       <div>
         <div class="row row-cols-md-4 row-cols-lg-4">
@@ -125,6 +134,7 @@ export default {
       total: 0,
       lastItem: null,
       firstItem: null,
+      categories: [],
     };
   },
 
@@ -182,7 +192,7 @@ export default {
         this.perPage,
         this.lastItem
       );
-
+      // this.getCategory();
       this.firstItem = this.products[this.products.length - this.perPage];
       this.lastItem = this.products[this.products.length - 1];
     },
@@ -223,6 +233,25 @@ export default {
       }
       return (this.products = products);
     },
+
+    async getCategory() {
+      let productsRef = db.collection("products");
+      let query = await productsRef.get();
+
+      query.docs.forEach((doc) => {
+        let category = doc.data().category;
+        this.categories.push(category);
+      });
+
+      this.categories = this.categories.filter((data, index) => {
+        return this.categories.indexOf(data) === index;
+      });
+      // console.log(this.categories);
+    },
+  },
+
+  created() {
+    this.getCategory();
   },
 
   async mounted() {
@@ -231,4 +260,14 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+/* Some media queries for responsiveness */
+/* @media screen and (max-height: 450px) {
+  .sidenav {
+    padding-top: 15px;
+  }
+  .sidenav a {
+    font-size: 18px;
+  }
+} */
+</style>

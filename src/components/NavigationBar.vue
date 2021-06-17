@@ -1,7 +1,8 @@
 <template>
-  <!-- <div> -->
-  <b-navbar class="text-secondary" toggleable="lg" type="dark" variant="dark">
-    <b-navbar-brand href="#">LOGO</b-navbar-brand>
+  <b-navbar class="text-secondary fixed" toggleable="lg" type="dark" variant="dark">
+    <b-navbar-brand href="#"
+      ><router-link class="text-light" to="/">LOGO</router-link></b-navbar-brand
+    >
 
     <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
@@ -99,7 +100,6 @@
       <!--  -->
     </b-collapse>
   </b-navbar>
-  <!-- </div> -->
 </template>
 
 <script>

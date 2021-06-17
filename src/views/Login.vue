@@ -39,7 +39,7 @@
                   v-on:click="submit"
                   >Login
                 </a>
-                <router-link class="text-link" to="/register">Register</router-link>
+                <router-link class="text-link" to="/register">Sign Up</router-link>
               </div>
             </div>
           </div>
@@ -116,7 +116,7 @@ export default {
           .auth()
           .signInWithEmailAndPassword(email, password);
 
-        console.log(userCredential);
+        // console.log(userCredential);
 
         let user = userCredential.user;
 

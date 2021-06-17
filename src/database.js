@@ -32,6 +32,7 @@ db.settings({timestampsInSnapshots: true});
 const getUser = store.getters.getUser;
 const isLoggedIn = store.getters.isLoggedIn;
 const getProducts = store.getters.productsInCart;
+const getOrders = store.getters.getOrders;
 // const prodProd = store.getters.allProducts;
 
 //Products operations in DB
@@ -48,9 +49,8 @@ export const addToCartDB = async () => {
       try {
         // console.log("saving to user cart");
         products = {Products: getProducts};
-        
+
         cartUserRef.set(products);
-        
       } catch (e) {
         console.log(e);
       }
@@ -62,9 +62,35 @@ export const addToCartDB = async () => {
   }
 };
 
+//Update orders in DB
+export const updateOrders = async () => {
+  if (isLoggedIn == true) {
+    // console.log("start checking in DB");
+    let ordersCollection = await db.collection("orders").doc(getUser.email);
+    let doc = await ordersCollection.get();
+    let orders = null;
+
+    if (doc.exists) {
+      // If user exists
+      try {
+        // console.log("saving to user orders");
+        orders = {Orders: getOrders};
+
+        ordersCollection.set(orders);
+      } catch (e) {
+        console.log(e);
+      }
+    } else {
+      // console.log("create user orders");
+      orders = {items: getOrders};
+      ordersCollection.set(orders);
+    }
+  }
+};
+
+//Update in DB changes made in the cart
 export const updateStoreFromDB = async () => {
-  let getUser = await store.getters.getUser;
-  let cartUserRef = db.collection("carts").doc(getUser.email);
+  let cartUserRef = await db.collection("carts").doc(getUser.email);
   let doc = await cartUserRef.get();
 
   if (doc.exists) {

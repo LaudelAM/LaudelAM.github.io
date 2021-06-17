@@ -10,6 +10,7 @@ import Login from "@/views/Login.vue";
 import Register from "@/views/Register.vue";
 import UserProfile from "@/views/UserProfile.vue";
 import PasswordChange from "@/views/PasswordChange.vue";
+import Payment from "@/views/Payment.vue";
 
 Vue.use(VueRouter);
 
@@ -28,26 +29,32 @@ export const router = new VueRouter({
            },
            {
              path: "/cart",
+             name: "CartList",
              component: CartList,
            },
            {
              path: "/about",
+             name: "About",
              component: About,
            },
            {
              path: "/contact",
+             name: "Contact",
              component: Contact,
            },
            {
              path: "/login",
+             name: "Login",
              component: Login,
            },
            {
              path: "/register",
+             name: "Register",
              component: Register,
            },
            {
              path: "/userProfile",
+             name: "UserProfile",
              component: UserProfile,
            },
            {
@@ -55,5 +62,10 @@ export const router = new VueRouter({
              name: "PasswordChange",
              component: PasswordChange,
            },
+           {
+            path: "/payment",
+            name: "Payment",
+            component: Payment,
+          },
          ],
        });
