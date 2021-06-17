@@ -8,7 +8,8 @@
           <label class="text-success"><strong>PAYMENT SUCCESSFUL</strong> </label>
         </div>
       </form>
-    <!-- -->
+      <!-- -->
+    </div>
   </div>
 </template>
 
@@ -23,10 +24,6 @@ export default {
   computed: {
     userLoggedIn() {
       return this.$store.getters.isLoggedIn;
-    },
-
-    getOrders() {
-      return this.$store.getters.getOrders;
     },
   },
 };
