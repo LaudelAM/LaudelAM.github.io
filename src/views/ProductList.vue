@@ -15,20 +15,6 @@
             >
           </b-dropdown>
         </b-button-group>
-        <!-- <ul class="nav nav-tabs mt-5">
-          <li class="nav-item dropdown">
-            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown"
-              >Categories</a
-            >
-            <div
-              class="dropdown-menu"
-              v-for="(category, index) of categories"
-              :key="index"
-            >
-              <a href="#" class="dropdown-item text-link">{{ category }}</a>
-            </div>
-          </li>
-        </ul> -->
       </nav>
     </div>
     <div class="col-10 justify-content-center">

@@ -43,7 +43,7 @@ export default {
     },
 
     getOrders() {
-      return this.$store.getters.getOrder;
+      return this.$store.getters.getOrders;
     },
   },
 };
