@@ -12,7 +12,7 @@
             v-for="(order, index) of orders"
             :key="index"
           >
-            <Orders v-bind:product="order" />
+            <Order v-bind:product="order" />
           </div>
         </div>
       </div>
@@ -25,13 +25,13 @@
 </template>
 
 <script>
-import Orders from "../components/Orders.vue";
+import Order from "../components/Order.vue";
 import { db } from "../database";
 // import firebase from "firebase/app";
 
 export default {
   components: {
-    Orders,
+    Order,
   },
 
   data() {
@@ -52,7 +52,7 @@ export default {
 
   async created() {
     this.orders = await this.userOrders();
-    console.log("after payment:", this.orders);
+    // console.log("after payment:", this.orders);
   },
 
   methods: {

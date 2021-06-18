@@ -138,19 +138,6 @@ export default {
       }
     },
 
-    async orders() {
-      let ordersCollection = await db.collection("orders").doc(this.getUser.email);
-      let doc = await ordersCollection.get();
-      // let orders = null;
-
-      if (doc.exists) {
-        let order = doc.data().Orders;
-        let orderL = order[order.length - 1].productsPerOrder;
-        console.log("order", order);
-        console.log("order legnth", orderL);
-      }
-    },
-
     async saveUserProfile() {
       //Update profile in DB
       console.log("Start updating profile in DB");
