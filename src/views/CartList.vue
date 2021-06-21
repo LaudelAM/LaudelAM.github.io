@@ -64,7 +64,6 @@
       >
         Pay Now
       </button>
-      <!-- {{ getOrders }} -->
     </div>
   </div>
 </template>

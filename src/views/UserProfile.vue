@@ -1,70 +1,118 @@
 <template>
-  <div class="d-flex flex-column align-items-center justify-content-center">
-    <div class="card mb-3 p-4 w-50" style="border: none">
-      <h5 class="card-header text-center">Profile Information</h5>
-      <img
-        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTTxYGdcuCvhkHUPzFkrnC-Emi7gWvIjOUUgQ&usqp=CAU"
-        class="card-img-thumbnail align-self-center rounded mb-2"
-        alt="Profile picture"
-      />
-      <!--  -->
-      <form>
-        <div class="form-row">
-          <div class="form-group col-md-6">
-            <label for="inputFirstname" class="text-capitalize">Firstname</label>
-            <input
-              type="firstname"
-              class="form-control text-capitalize"
-              v-model="input.firstname"
-              pattern="[^\d]+"
-              id="inputFirstname"
-              value="getFirstname"
-            />
-          </div>
-          <div class="form-group col-md-6">
-            <label for="inputLastname" class="text-capitalize">Lastname</label>
-            <input
-              type="lastname"
-              class="form-control text-capitalize"
-              v-model="input.lastname"
-              pattern="[^\d]+"
-              id="inputLastname"
-              value="getLastname"
-            />
-          </div>
-          <div class="form-group col-md-6">
-            <label for="inputEmail">Email</label>
-            <input
-              type="email"
-              class="form-control"
-              v-model="input.email"
-              pattern="^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$"
-              id="inputEmail"
-              value="getEmail"
-            />
-          </div>
-
-          <div class="form-group col-md-6">
-            <label for="inputAddress">Residential Address</label>
-            <input
-              type="text"
-              class="form-control text-capitalize"
-              v-model="input.address"
-              id="inputAddress"
-              value="getAddress"
-            />
+  <b-container fluid>
+    <b-row>
+      <b-col cols="3" class="d-block-flex">
+        <div class="col-md col-sm sidebar1">
+          <b-col class="text-center w-100">
+            <b-img
+              src="https://www.pinclipart.com/picdir/middle/154-1548998_png-file-fa-user-circle-icon-clipart.png"
+              fluid-grow
+              alt="Responsive image"
+            ></b-img>
+          </b-col>
+          <br />
+          <div class="left-navigation">
+            <ul class="list">
+              <li>
+                <router-link class="text-dark" to="/userProfile"
+                  >Profile Details</router-link
+                >
+              </li>
+              <li>
+                <router-link class="text-dark" to="/ordersRecord">Orders</router-link>
+              </li>
+            </ul>
           </div>
         </div>
-        <button type="submit" class="btn btn-primary" v-on:click="saveUserProfile">
-          Save
-        </button>
-        <router-link class="text-primary" style="float: right" to="/passwordChange"
-          >Change password here</router-link
+      </b-col>
+      <b-col cols="9">
+        <b-card
+          ref="details"
+          class="text-center w-100"
+          header="USER INFORMATION"
+          header-tag="header"
         >
-      </form>
-    </div>
-    <!-- -->
-  </div>
+          <b-form>
+            <b-form-row>
+              <b-form-group
+                id="input-group-1"
+                class="col-xs col-md-6"
+                label="Firstname:"
+                label-for="inputFirstname"
+              >
+                <b-form-input
+                  id="inputFirstname"
+                  class="form-control text-capitalize"
+                  pattern="[^\d]+"
+                  v-model="input.firstname"
+                  value="getFirstname"
+                  required
+                ></b-form-input>
+              </b-form-group>
+
+              <b-form-group
+                id="input-group-2"
+                class="col-xs col-md-6"
+                label="Lastname:"
+                label-for="inputLastname"
+              >
+                <b-form-input
+                  id="inputLastname"
+                  class="form-control text-capitalize"
+                  pattern="[^\d]+"
+                  v-model="input.lastname"
+                  value="getLastname"
+                  required
+                ></b-form-input>
+              </b-form-group>
+
+              <b-form-group
+                id="input-group-3"
+                class="col-xs col-md-6"
+                label="Residential Address:"
+                label-for="inputAddress"
+              >
+                <b-form-input
+                  id="inputAddress"
+                  class="form-control text-capitalize"
+                  v-model="input.address"
+                  value="getAddress"
+                  required
+                ></b-form-input>
+              </b-form-group>
+
+              <b-form-group
+                id="input-group-4"
+                class="col-xs col-md-6"
+                label="Email address:"
+                label-for="inputEmail"
+                description="We'll never share your email with anyone else."
+              >
+                <b-form-input
+                  id="inputEmail"
+                  pattern="^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$"
+                  v-model="input.email"
+                  type="email"
+                  value="getEmail"
+                  required
+                ></b-form-input>
+              </b-form-group>
+            </b-form-row>
+            <b-button
+              type="submit"
+              variant="primary"
+              style="float: left"
+              v-on:click="saveUserProfile"
+              >Save</b-button
+            >
+            <router-link class="text-primary" style="float: right" to="/passwordChange"
+              >Change password here</router-link
+            >
+          </b-form>
+        </b-card>
+      </b-col>
+    </b-row>
+  </b-container>
 </template>
 
 <script>
@@ -124,10 +172,6 @@ export default {
     },
   },
 
-  created() {
-    this.orders();
-  },
-
   methods: {
     async fetchUserProfile() {
       let userRef = db.collection("users").doc(this.getUser.email);
@@ -172,3 +216,47 @@ export default {
   },
 };
 </script>
+<style>
+.sidebar1 {
+  background: #faf9f9;
+  /* For browsers that do not support gradients */
+  background: -webkit-linear-gradient(#fcfbfb, #f8f8f7, #fcfcfa);
+  /* For Safari 5.1 to 6.0 */
+  background: -o-linear-gradient(#fcfbfb, #f8f8f7, #fcfcfa);
+  /* For Opera 11.1 to 12.0 */
+  background: -moz-linear-gradient(#fcfbfb, #f8f8f7, #fcfcfa);
+  /* For Firefox 3.6 to 15 */
+  background: linear-gradient(#fcfbfb, #f8f8f7, #fcfcfa);
+  /* Standard syntax */
+  padding: 0px;
+  min-height: 100%;
+}
+.logo {
+  max-height: 130px;
+}
+.logo > img {
+  margin-top: 30px;
+  padding: 3px;
+  border: 3px solid white;
+  border-radius: 100%;
+}
+.list {
+  color: #fff;
+  list-style: none;
+  padding-left: 0px;
+}
+.list::first-line {
+  color: rgba(255, 255, 255, 0.5);
+}
+.list > li,
+h5 {
+  padding: 5px 0px 5px 40px;
+}
+.list > li:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-left: 5px solid rgb(3, 3, 3);
+  color: rgb(8, 8, 8);
+  font-weight: bolder;
+  padding-left: 35px;
+}
+</style>

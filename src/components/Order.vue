@@ -13,13 +13,8 @@
       <div class="col-md-10">
         <div class="card-body justify-content-center">
           <h5 class="card-title">{{ product.title }}</h5>
-          <p
-            class="card-text text-truncate"
-            v-b-popover.hover="product.description"
-            variant="bg-transparent text-dark"
-          >
-            <strong>See Description:</strong><br />
-            {{ product.description }}
+          <p class="card-text">
+            <strong>R{{ product.price }}</strong>
           </p>
         </div>
       </div>
@@ -29,7 +24,7 @@
 
 <script>
 export default {
-  name: "Orders",
+  name: "Order",
 
   props: {
     product: Object,

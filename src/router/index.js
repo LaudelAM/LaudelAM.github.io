@@ -11,6 +11,7 @@ import Register from "@/views/Register.vue";
 import UserProfile from "@/views/UserProfile.vue";
 import PasswordChange from "@/views/PasswordChange.vue";
 import Payment from "@/views/Payment.vue";
+import OrdersRecord from "@/views/OrdersRecord.vue";
 
 Vue.use(VueRouter);
 
@@ -66,6 +67,11 @@ export const router = new VueRouter({
             path: "/payment",
             name: "Payment",
             component: Payment,
+          },
+          {
+            path: "/ordersRecord",
+            name: "OrdersRecord",
+            component: OrdersRecord,
           },
          ],
        });

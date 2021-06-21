@@ -3,19 +3,17 @@
   <div class="d-flex justify-content-center p-2">
     <!-- Side navigation -->
     <div class="d-block-flex col-2">
-      <nav class="sidenav">
-        <b-button-group vertical>
-          <b-dropdown class="pt-8" right split text="Categories" variant="light">
-            <b-dropdown-item
-              style="text-transform: capitalize"
-              v-for="(category, index) of categories"
-              :key="index"
-              ref="buttonGroupSelect"
-              >{{ category }}</b-dropdown-item
-            >
-          </b-dropdown>
-        </b-button-group>
-      </nav>
+      <details class="mt-5">
+        <summary class="mb-2" ref="category">Categories</summary>
+        <hr />
+        <b-link
+          href="#"
+          style="text-transform: capitalize; color: black"
+          v-for="(category, index) of categories"
+          :key="index"
+          >{{ category }} <br
+        /></b-link>
+      </details>
     </div>
     <div class="col-10 justify-content-center">
       <div class="d-flex flex-row no-gutters">
@@ -83,17 +81,6 @@
             <a class="page-link" v-on:click="processOperation()" href="#">Next</a>
           </li>
         </ul>
-
-        <!-- <b-pagination
-          v-model="currentPage"
-          align="center"
-          pills
-          :per-page="perPage"
-          prev-text="Prev"
-          next-text="Next"
-          @input="processOperation"
-          aria-controls="my-products"
-        ></b-pagination> -->
       </div>
     </div>
   </div>

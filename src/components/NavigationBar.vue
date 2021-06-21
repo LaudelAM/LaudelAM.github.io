@@ -75,6 +75,9 @@
           <b-dropdown-item>
             <router-link class="text-dark" to="/userProfile">Profile</router-link>
           </b-dropdown-item>
+          <!-- <b-dropdown-item>
+            <router-link class="text-dark" to="/userProfile">Orders</router-link>
+          </b-dropdown-item> -->
           <b-dropdown-item @click="logout" href="#">Logout</b-dropdown-item>
         </b-nav-item-dropdown>
 

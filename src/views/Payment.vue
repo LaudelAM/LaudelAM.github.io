@@ -5,7 +5,6 @@
       <!--  -->
       <div class="d-flex justify-content-center p-2">
         <div class="col justify-content-center">
-          <!-- <div class="row no-gutters row-cols-md-2 row-cols-sm"> -->
           <div
             class="col-md col-sm"
             style="border: none"
@@ -27,7 +26,6 @@
 <script>
 import Order from "../components/Order.vue";
 import { db } from "../database";
-// import firebase from "firebase/app";
 
 export default {
   components: {
@@ -60,7 +58,6 @@ export default {
       let ordersCollection = await db.collection("orders").doc(this.getUser.email);
       let doc = await ordersCollection.get();
       let userLastOrder = [];
-      // this.method();
 
       if (doc.exists) {
         let order = doc.data().Orders;
