@@ -159,7 +159,7 @@ export default {
     },
     //Generate signature for transaction security
     getSignature() {
-      if (this.isLoggedIn == true && this.getProductsInCart != []) {
+      if (this.isLoggedIn == true || this.getProductsInCart != []) {
         const generateMD5 = (obj, secret = "secret") => {
           let str = "";
           for (let val in obj) {
@@ -173,11 +173,10 @@ export default {
         let productsPerOrder = this.getProductsInCart;
         let total = this.getTotal;
         var today = new Date();
-        // var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
         let currentDate =
           today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate();
 
-        // console.log("Date", currentDate);
+        console.log("orderNum", orderNum);
         this.newOrder = {
           orderNumber: orderNum,
           productsPerOrder: productsPerOrder,

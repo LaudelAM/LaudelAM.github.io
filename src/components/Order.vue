@@ -12,7 +12,7 @@
       </div>
       <div class="col-md-10">
         <div class="card-body justify-content-center">
-          <h5 class="card-title">{{ product.title }}</h5>
+          <h6 class="card-title">{{ product.title }}</h6>
           <p class="card-text">
             <strong>R{{ product.price }}</strong>
           </p>
