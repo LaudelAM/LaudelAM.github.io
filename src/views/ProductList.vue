@@ -219,7 +219,6 @@ export default {
       this.categories = this.categories.filter((data, index) => {
         return this.categories.indexOf(data) === index;
       });
-      // console.log(this.categories);
     },
   },
 
@@ -232,15 +231,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-/* Some media queries for responsiveness */
-/* @media screen and (max-height: 450px) {
-  .sidenav {
-    padding-top: 15px;
-  }
-  .sidenav a {
-    font-size: 18px;
-  }
-} */
-</style>

@@ -2,21 +2,44 @@
   <b-container fluid="xl">
     <b-row no-gutters>
       <b-col class="d-block-flex" md="6">
-        <p class="card-text" variant="bg-transparent text-dark">
-          Order# {{ order.orderNumber }}
-        </p>
-        <p class="card-text" variant="bg-transparent text-dark">R{{ order.total }}</p>
+        <div class="mr-auto">
+          <p class="card-text" variant="bg-transparent text-dark">
+            Order #{{ order.orderNumber }}
+          </p>
+        </div>
+        <div class="mr-auto">
+          <p class="card-text" variant="bg-transparent text-dark">
+            Total: R{{ order.total }}
+          </p>
+        </div>
+        <div class="mr-auto">
+          <p class="card-text" variant="bg-transparent text-dark">
+            Date: {{ order.date }}
+          </p>
+        </div>
       </b-col>
       <b-col class="d-block-flex" md="6">
-        <b-link href="#">View Products</b-link>
+        <b-link href="#" @click="fetchOrders(order.orderNumber)">View Products</b-link>
+        <b-modal ref="my-modal" :title="order.orderNumber" scrollable>
+          <div class="d-block-flex text-center">
+            <div
+              class="col-md col-sm"
+              style="border: none"
+              v-for="(order, index) of orders"
+              :key="index"
+            >
+              <Order v-bind:product="order" />
+            </div>
+          </div>
+        </b-modal>
       </b-col>
     </b-row>
   </b-container>
 </template>
 
 <script>
-// import Order from "./Order.vue";
 import { db } from "../database";
+import Order from "../components/Order.vue";
 export default {
   name: "Orders",
 
@@ -24,41 +47,42 @@ export default {
     order: Object,
   },
 
-  // components: {
-  //   Order,
-  // },
-
   data() {
     return {
       orders: [],
     };
   },
 
-  computed: {
-    userLoggedIn() {
-      return this.$store.getters.isLoggedIn;
-    },
+  components: {
+    Order,
+  },
 
+  computed: {
     getUser() {
       return this.$store.getters.getUser;
     },
   },
 
-  async created() {
-    this.orders = await this.userOrders();
-  },
-
   methods: {
-    async userOrders() {
-      let ordersCollection = await db.collection("orders").doc(this.getUser.email);
-      let doc = await ordersCollection.get();
-      let productPerOrder = [];
+    showModal() {
+      this.$refs["my-modal"].show();
+    },
 
-      if (doc.exists) {
-        let order = doc.data().Orders;
-        productPerOrder = order.productsPerOrder;
-        return productPerOrder;
+    async fetchOrders(orderNumber) {
+      let ordersCollection = await db.collection("orders").doc(this.getUser.email);
+      let query = await ordersCollection.get();
+
+      this.showModal();
+
+      if (query.exists) {
+        let order = query.data().Orders;
+        for (let i = 0; i < order.length; i++) {
+          if (order[i].orderNumber == orderNumber) order = order[i].productsPerOrder;
+        }
+        return (this.orders = order);
       }
+
+      // this.$store.commit("emptyOrders");
     },
   },
 };

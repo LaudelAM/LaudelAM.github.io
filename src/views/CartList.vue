@@ -1,7 +1,6 @@
 <template>
   <div class="d-flex justify-content-center p-2">
     <div class="col-9 justify-content-center">
-      <!-- <div class="row no-gutters row-cols-md-2 row-cols-sm"> -->
       <div
         class="col-md col-sm"
         style="border: none"
@@ -10,7 +9,6 @@
       >
         <CartItem v-bind:product="getProductInCart" />
       </div>
-      <!-- </div> -->
     </div>
     <!--  -->
     <div class="col-md-3 col-sm p-3">
@@ -97,6 +95,7 @@ export default {
         orderNumber: "",
         productsPerOrder: "",
         total: "",
+        date: "",
       },
     };
   },
@@ -160,41 +159,50 @@ export default {
     },
     //Generate signature for transaction security
     getSignature() {
-      const generateMD5 = (obj, secret = "secret") => {
-        let str = "";
-        for (let val in obj) {
-          str += obj[val];
-        }
-        str += secret;
-        return CryptoJS.MD5(str).toString();
-      };
+      if (this.isLoggedIn == true && this.getProductsInCart != []) {
+        const generateMD5 = (obj, secret = "secret") => {
+          let str = "";
+          for (let val in obj) {
+            str += obj[val];
+          }
+          str += secret;
+          return CryptoJS.MD5(str).toString();
+        };
 
-      let orderNum = this.getOrderNumber(this.newOrder.orderNumber);
-      let productsPerOrder = this.getProductsInCart;
-      let total = this.getTotal;
-      this.newOrder = {
-        orderNumber: orderNum,
-        productsPerOrder: productsPerOrder,
-        total: total,
-      };
+        let orderNum = this.getOrderNumber(this.newOrder.orderNumber);
+        let productsPerOrder = this.getProductsInCart;
+        let total = this.getTotal;
+        var today = new Date();
+        // var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+        let currentDate =
+          today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate();
 
-      this.$store.commit("setProductsPerOrder", this.newOrder);
+        // console.log("Date", currentDate);
+        this.newOrder = {
+          orderNumber: orderNum,
+          productsPerOrder: productsPerOrder,
+          total: total,
+          date: currentDate,
+        };
 
-      let data = {
-        //merchant details
-        merchant_id: "10000100",
-        merchant_key: "46f0cd694581a",
-        return_url: "https://laudelam.github.io/#/payment",
-        cancel_url: "https://laudelam.github.io/#/products",
-        //transaction details
-        amount: total,
-        item_name: orderNum,
-      };
+        this.$store.commit("setProductsPerOrder", this.newOrder);
 
-      let signature = generateMD5(data);
-      // console.log("Signature:", signature);
+        let data = {
+          //merchant details
+          merchant_id: "10000100",
+          merchant_key: "46f0cd694581a",
+          return_url: "https://laudelam.github.io/#/payment",
+          cancel_url: "https://laudelam.github.io/#/products",
+          //transaction details
+          amount: total,
+          item_name: orderNum,
+        };
 
-      return signature;
+        let signature = generateMD5(data);
+        // console.log("Signature:", signature);
+
+        return signature;
+      }
     },
   },
 };

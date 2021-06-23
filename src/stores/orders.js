@@ -16,5 +16,10 @@ export default {
       state.orderN.push(order);
       updateOrders();
     },
+
+    emptyOrders(state){
+      state.orderN = []
+      updateOrders();
+    }
   },
 };
